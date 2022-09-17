@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32811.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeLight", "src\PipeLight\PipeLight.csproj", "{063971BC-BEF0-4D21-B908-0B9A568135E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2FA8711D-F0F7-4328-B69F-E1369A353948}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{063971BC-BEF0-4D21-B908-0B9A568135E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{063971BC-BEF0-4D21-B908-0B9A568135E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{063971BC-BEF0-4D21-B908-0B9A568135E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{063971BC-BEF0-4D21-B908-0B9A568135E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{063971BC-BEF0-4D21-B908-0B9A568135E6} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5AEF2C3-0EC9-4809-960B-546B622CB6AC}
+	EndGlobalSection
+EndGlobal
