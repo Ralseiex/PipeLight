@@ -20,7 +20,7 @@ public class PipelineStep<TIn, TOut> : IPipelineStep<TIn, TOut>
         var result = await _middleware.InvokeAsync(data);
 
         if (NextStep is not null)
-            _ = NextStep.PushAsync(result, context);
+            _ = NextStep.PushAsync(result, context).ConfigureAwait(false);
         else
             context.PipelineCompletionSource?.SetResult(result);
     }

@@ -24,7 +24,7 @@ public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
         var task = pipelineCompletionSource.Task;
         var context = new PipelineContext(pipelineCompletionSource);
 
-        FirstStep?.PushAsync(data, context);
+        FirstStep?.PushAsync(data, context).ConfigureAwait(false);
 
         return (TOut)(await task);
     }
