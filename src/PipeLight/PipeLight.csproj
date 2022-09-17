@@ -11,7 +11,8 @@
     <Authors>Asriel Bukharov</Authors>
     <Description>A simple library to help you build pipelines</Description>
     <RepositoryUrl>https://github.com/Ralsei25/PipeLight</RepositoryUrl>
-    <PackageTags>pipeline</PackageTags>
+	<PackageLicenseUrl>https://github.com/Ralsei25/PipeLight/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageTags>pipelight; pipeline</PackageTags>
     <Copyright>Copyright © Asriel Bukharov</Copyright>
   </PropertyGroup>
 
