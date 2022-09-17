@@ -5,7 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Company>$(Authors)ad</Company>
+    <Title>PipeLight</Title>
+    <PackageId>PipeLight</PackageId>
+    <Product>PipeLight</Product>
+    <Authors>Asriel Bukharov</Authors>
+    <Description>A simple library to help you build pipelines</Description>
+    <RepositoryUrl>https://github.com/Ralsei25/PipeLight</RepositoryUrl>
+    <PackageTags>pipeline</PackageTags>
+    <Copyright>Copyright © Asriel Bukharov</Copyright>
   </PropertyGroup>
 
 </Project>
