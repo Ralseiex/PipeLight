@@ -1,4 +1,4 @@
-﻿namespace PipeLight.Interfaces;
+﻿namespace PipeLight.Interfaces.Steps;
 
 public interface IPipelineStepExit<TOut>
 {

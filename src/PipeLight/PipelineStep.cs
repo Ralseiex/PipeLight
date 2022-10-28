@@ -1,27 +1,58 @@
-﻿using PipeLight.Interfaces;
-using PipeLight.Middlewares.Interfaces;
+﻿using PipeLight.Exceptions;
+using PipeLight.Interfaces;
+using PipeLight.Interfaces.Steps;
+using PipeLight.Steps.Interfaces;
 
 namespace PipeLight;
 
-public class PipelineStep<TIn, TOut> : IPipelineStep<TIn, TOut>
+internal class PipelineStep<TIn> : IPipelineStep<TIn>
 {
-    private readonly IPipelineMiddleware<TIn, TOut> _middleware;
-    public PipelineStep(IPipelineMiddleware<TIn, TOut> middleware)
+    private readonly IPipelineStepAsyncHandler<TIn> _asyncStepHandler;
+
+    public PipelineStep(IPipelineStepAsyncHandler<TIn> step)
     {
-        _middleware = middleware;
+        _asyncStepHandler = step;
     }
 
+
+    public async Task PushAsync(TIn payload, IPipelineContext context)
+    {
+        try
+        {
+            await _asyncStepHandler.InvokeAsync(payload).ConfigureAwait(false);
+            context.PipelineCompletionSource?.SetResult(null);
+        }
+        catch (Exception ex)
+        {
+            context.PipelineCompletionSource?.SetException(ex);
+        }
+    }
+}
+internal class PipelineStep<TIn, TOut> : IPipelineStep<TIn, TOut>
+{
+    private readonly IPipelineStepAsyncHandler<TIn, TOut> _asyncStepHandler;
+    public PipelineStep(IPipelineStepAsyncHandler<TIn, TOut> step)
+    {
+        _asyncStepHandler = step;
+    }
 
     public IPipelineStepEnter<TOut>? NextStep { get; set; }
 
 
-    public async Task PushAsync(TIn data, IPipelineContext context)
+    public async Task PushAsync(TIn? payload, IPipelineContext context)
     {
-        var result = await _middleware.InvokeAsync(data).ConfigureAwait(false);
+        try
+        {
+            var result = await _asyncStepHandler.InvokeAsync(payload).ConfigureAwait(false);
 
-        if (NextStep is not null)
-            _ = NextStep.PushAsync(result, context).ConfigureAwait(false);
-        else
-            context.PipelineCompletionSource?.SetResult(result);
+            if (NextStep is not null)
+                _ = NextStep.PushAsync(result, context).ConfigureAwait(false);
+            else
+                context.PipelineCompletionSource?.SetResult(result);
+        }
+        catch (Exception ex)
+        {
+            context.PipelineCompletionSource?.SetException(ex);
+        }
     }
 }
