@@ -21,9 +21,9 @@ public class PipelineFactory
     {
         return new SealedPipe<T>(firstAndLastStep);
     }
-    public IPipeline<TIn, TOut> CreatePipeline<TIn, TOut>(IPipeFitting<TIn, TOut> firstStep)
+    public IPipeline<TIn, TOut> CreatePipeline<TIn, TOut>(IPipeTransform<TIn, TOut> firstStep)
     {
-        var node = new FittingNode<TIn, TOut>(firstStep);
+        var node = new TransformNode<TIn, TOut>(firstStep);
         return new Pipeline<TIn, TOut>(node);
     }
 }

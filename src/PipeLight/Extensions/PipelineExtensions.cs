@@ -7,14 +7,14 @@ using PipeLight.Pipes;
 namespace PipeLight.Extensions;
 public static class PipelineExtensions
 {
-    public static IPipeline<TIn, TNewOut> AddFitting<TIn, TOut, TNewOut>(this IPipeline<TIn, TOut> pipeline, Func<TOut, TNewOut> fittingHandler)
+    public static IPipeline<TIn, TNewOut> AddTransform<TIn, TOut, TNewOut>(this IPipeline<TIn, TOut> pipeline, Func<TOut, TNewOut> transformHandler)
     {
-        var fittingNode = new PipeFittingFunc<TOut, TNewOut>(fittingHandler);
-        return pipeline.AddFitting(fittingNode);
+        var transformNode = new PipeTransformFunc<TOut, TNewOut>(transformHandler);
+        return pipeline.AddTransform(transformNode);
     }
-    public static ISealedPipeline<TIn> Seal<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, Action<TOut> fittingHandler)
+    public static ISealedPipeline<TIn> Seal<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, Action<TOut> sealHandler)
     {
-        var sealedStep = new SealedActionStep<TOut>(fittingHandler);
+        var sealedStep = new SealedActionStep<TOut>(sealHandler);
         return pipeline.Seal(sealedStep);
     }
 

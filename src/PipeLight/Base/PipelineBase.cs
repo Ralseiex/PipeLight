@@ -54,9 +54,9 @@ public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
         return (TOut)(await task);
     }
 
-    public IPipeline<TIn, TOut> AddPipe(IPipe<TOut> pipeFitting)
+    public IPipeline<TIn, TOut> AddPipe(IPipe<TOut> pipeTransform)
     {
-        var pipeNode = new PipeNode<TOut>(pipeFitting);
+        var pipeNode = new PipeNode<TOut>(pipeTransform);
 
         LastStep.NextNode = pipeNode;
         return new Pipeline<TIn, TOut>(FirstStep, pipeNode);
@@ -73,12 +73,12 @@ public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
         LastStep.NextNode = newNode;
         return new Pipeline<TIn, TOut>(FirstStep, newNode);
     }
-    public IPipeline<TIn, TNewOut> AddFitting<TNewOut>(IPipeFitting<TOut, TNewOut> pipeFitting)
+    public IPipeline<TIn, TNewOut> AddTransform<TNewOut>(IPipeTransform<TOut, TNewOut> pipeTransform)
     {
-        var fittingNode = new FittingNode<TOut, TNewOut>(pipeFitting);
+        var transformNode = new TransformNode<TOut, TNewOut>(pipeTransform);
 
-        LastStep.NextNode = fittingNode;
-        return new Pipeline<TIn, TNewOut>(FirstStep, fittingNode);
+        LastStep.NextNode = transformNode;
+        return new Pipeline<TIn, TNewOut>(FirstStep, transformNode);
     }
 
     public ISealedPipeline<TIn> Seal(ISealedPipe<TOut> lastStep)

@@ -2,9 +2,9 @@
 
 namespace PipeLigth.Tests.Mocks.Steps;
 
-internal class MockAsyncStepWithResult : IPipeFitting<MockPayloadInt, MockPipelineResult>
+internal class MockAsyncStepWithResult : IPipeTransform<MockPayloadInt, MockPipelineResult>
 {
-    public async Task<MockPipelineResult> FitAsync(MockPayloadInt payload)
+    public async Task<MockPipelineResult> TransformAsync(MockPayloadInt payload)
     {
         return await Task.FromResult(new MockPipelineResult()
         {

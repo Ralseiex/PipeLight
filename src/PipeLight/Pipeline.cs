@@ -30,21 +30,21 @@ public class Pipeline<TIn> : PipelineBase<TIn, TIn>
 
         return new Pipeline<TIn>(FirstStep, pipeNode);
     }
-    public IPipeline<TIn, TNewOut> AddFitting<TNewOut>(Func<TIn, TNewOut> fitting)
+    public IPipeline<TIn, TNewOut> AddTransform<TNewOut>(Func<TIn, TNewOut> transform)
     {
-        var fittingNode = new FittingNode<TIn, TNewOut>(fitting);
-        LastStep.NextNode = fittingNode;
+        var transformNode = new TransformNode<TIn, TNewOut>(transform);
+        LastStep.NextNode = transformNode;
 
-        return new Pipeline<TIn, TNewOut>(FirstStep, fittingNode);
+        return new Pipeline<TIn, TNewOut>(FirstStep, transformNode);
     }
 }
 public class Pipeline<TIn, TOut> : PipelineBase<TIn, TOut>
 {
-    public Pipeline(FittingNode<TIn, TOut> firstNode)
+    public Pipeline(TransformNode<TIn, TOut> firstNode)
         : base(firstNode, firstNode)
     {
     }
-    public Pipeline(PipeNode<TIn> firstNode, FittingNode<TIn, TOut> secondNode)
+    public Pipeline(PipeNode<TIn> firstNode, TransformNode<TIn, TOut> secondNode)
         : base(firstNode, secondNode)
     {
     }

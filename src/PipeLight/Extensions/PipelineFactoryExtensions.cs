@@ -14,7 +14,7 @@ public static class PipelineFactoryExtensions
     }
     public static IPipeline<TIn, TOut> CreatePipeline<TIn, TOut>(this PipelineFactory factory, Func<TIn, TOut> firstStepHandler)
     {
-        var node = new PipeFittingFunc<TIn, TOut>(firstStepHandler);
+        var node = new PipeTransformFunc<TIn, TOut>(firstStepHandler);
         return factory.CreatePipeline(node);
     }
 }

@@ -54,7 +54,7 @@ public class Tests
             .AddStep(new MockStepAsync())
             .AddStep(new MockStepAsync())
             .AddStep(new MockStepAsync())
-            .AddFitting(new MockAsyncStepWithResult());
+            .AddTransform(new MockAsyncStepWithResult());
 
         var result = await pipeline.PushAsync(payload);
 
@@ -69,7 +69,7 @@ public class Tests
         var payload1 = TestHelper.GetMockPayload(5);
         var payload2 = TestHelper.GetMockPayload(6);
         var pipeline = new PipelineFactory().CreatePipeline()
-            .AddFitting(new MockAsyncStepWithResult());
+            .AddTransform(new MockAsyncStepWithResult());
 
         var result1 = await pipeline.PushAsync(payload1);
         var result2 = await pipeline.PushAsync(payload2);
@@ -98,21 +98,21 @@ public class Tests
     {
         var pipeline1 =
             new PipelineFactory().CreatePipeline()
-            .AddFitting(new StringToIntFitting())
+            .AddTransform(new StringToIntTransform())
             .AddStep(new IncrementPipeStep())
-            .AddFitting(new IntToStringFitting())
+            .AddTransform(new IntToStringTransform())
             .AddStep(new LoggingPipeStep())
             .AddStep(new LoggingPipeStep())
-            .AddFitting(new StringToIntFitting())
+            .AddTransform(new StringToIntTransform())
             .AddStep(new IncrementPipeStep());
 
         var pipeline2 =
             new PipelineFactory().CreatePipeline()
             .AddStep(new IncrementPipeStep())
-            .AddFitting(new IntToStringFitting())
+            .AddTransform(new IntToStringTransform())
             .AddStep(new LoggingPipeStep())
             .AddStep(new LoggingPipeStep())
-            .AddFitting(new StringToIntFitting())
+            .AddTransform(new StringToIntTransform())
             .AddStep(new IncrementPipeStep());
 
         var result1 = await pipeline1.PushAsync("2");
@@ -126,10 +126,10 @@ public class Tests
         var pipeline =
                 new PipelineFactory().CreatePipeline()
                 .AddStep(new IncrementPipeStep())
-                .AddFitting(new IntToStringFitting())
+                .AddTransform(new IntToStringTransform())
                 .AddStep(new LoggingPipeStep())
                 .AddStep(new LoggingPipeStep())
-                .AddFitting(new StringToIntFitting())
+                .AddTransform(new StringToIntTransform())
                 .AddStep(new IncrementPipeStep());
 
         var task1 = pipeline.PushAsync(1);
@@ -149,9 +149,9 @@ public class Tests
                 .AddStep((int x) => ++x)
                 .AddStep((int x) => ++x)
             )
-            .AddFitting(new IntToStringFitting())
+            .AddTransform(new IntToStringTransform())
                 .AddStep(new LoggingPipeStep())
-            .AddFitting(new StringToIntFitting())
+            .AddTransform(new StringToIntTransform())
             .AddPipe(factory.CreatePipeline()
                 .AddStep((int x) => ++x)
                 .AddStep((int x) => ++x)

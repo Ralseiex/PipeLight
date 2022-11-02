@@ -2,9 +2,9 @@
 
 namespace Benchmarks
 {
-    internal class StringToIntFitting : IPipeFitting<string, int>
+    internal class StringToIntTransform : IPipeTransform<string, int>
     {
-        public async Task<int> FitAsync(string payload)
+        public async Task<int> TransformAsync(string payload)
         {
             return await Task.FromResult(int.Parse(payload));
         }

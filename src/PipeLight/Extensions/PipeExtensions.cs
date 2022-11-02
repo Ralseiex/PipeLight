@@ -16,9 +16,9 @@ public static class PipeExtensions
         newPipe.AddStep(newStep);
         return newPipe;
     }
-    public static IPipeline<T, TNewOut> AddFitting<T, TNewOut>(this IPipe pipe, Func<T, TNewOut> pipeFittingHandler)
+    public static IPipeline<T, TNewOut> AddTransform<T, TNewOut>(this IPipe pipe, Func<T, TNewOut> transformHandler)
     {
-        var firstNode = new FittingNode<T, TNewOut>(pipeFittingHandler);
+        var firstNode = new TransformNode<T, TNewOut>(transformHandler);
         var pipeline = new Pipeline<T, TNewOut>(firstNode);
         return pipeline;
     }
@@ -27,10 +27,10 @@ public static class PipeExtensions
         IPipeStep<T> newStep = new FuncPipeStep<T>(pipeStepHandler);
         return pipe.AddStep(newStep);
     }
-    public static IPipeline<T, TNewOut> AddFitting<T, TNewOut>(this IPipe<T> pipe, Func<T, TNewOut> fittingHandler)
+    public static IPipeline<T, TNewOut> AddTransform<T, TNewOut>(this IPipe<T> pipe, Func<T, TNewOut> transformHandler)
     {
         var pipeline = new Pipeline<T>(pipe)
-            .AddFitting(fittingHandler);
+            .AddTransform(transformHandler);
         return pipeline;
     }
 }

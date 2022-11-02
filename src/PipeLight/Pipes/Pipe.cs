@@ -19,13 +19,12 @@ public class Pipe : IPipe
     {
         return new SealedPipe<T>(firstAndlastStep);
     }
-    public IPipeline<T, TNewOut> AddFitting<T, TNewOut>(IPipeFitting<T, TNewOut> pipeFitting)
+    public IPipeline<T, TNewOut> AddTransform<T, TNewOut>(IPipeTransform<T, TNewOut> pipeTransform)
     {
-        var firstNode = new FittingNode<T, TNewOut>(pipeFitting);
+        var firstNode = new TransformNode<T, TNewOut>(pipeTransform);
         var pipeline = new Pipeline<T, TNewOut>(firstNode);
         return pipeline;
     }
-
     public IPipeline<T, T> AddPipe<T>(IPipe<T> pipe)
     {
         return new Pipeline<T>(pipe);
@@ -57,10 +56,10 @@ public class Pipe<T> : IPipe<T>
     {
         return new SealedPipe<T>(this, lastStep);
     }
-    public IPipeline<T, TNewOut> AddFitting<TNewOut>(IPipeFitting<T, TNewOut> fitting)
+    public IPipeline<T, TNewOut> AddTransform<TNewOut>(IPipeTransform<T, TNewOut> transform)
     {
         var pipeline = new Pipeline<T>(this)
-            .AddFitting(fitting);
+            .AddTransform(transform);
         return pipeline;
     }
 

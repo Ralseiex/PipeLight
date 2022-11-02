@@ -5,25 +5,25 @@ using PipeLight.Pipes.Interfaces;
 
 namespace PipeLight.Nodes;
 
-public class FittingNode<TIn, TOut> : IPipelineEnter<TIn>, IPipelineExit<TOut>
+public class TransformNode<TIn, TOut> : IPipelineEnter<TIn>, IPipelineExit<TOut>
 {
-    private readonly IPipeFitting<TIn, TOut> _fitting;
+    private readonly IPipeTransform<TIn, TOut> _transform;
     public IPipelineEnter<TOut>? NextNode { get; set; }
 
-    public FittingNode(IPipeFitting<TIn, TOut> fitting)
+    public TransformNode(IPipeTransform<TIn, TOut> transform)
     {
-        _fitting = fitting;
+        _transform = transform;
     }
-    public FittingNode(Func<TIn, TOut> fitting)
+    public TransformNode(Func<TIn, TOut> transform)
     {
-        _fitting = new PipeFittingFunc<TIn, TOut>(fitting);
+        _transform = new PipeTransformFunc<TIn, TOut>(transform);
     }
 
     public async Task PushAsync(TIn? payload, IPipelineContext context)
     {
         try
         {
-            var result = await _fitting.FitAsync(payload).ConfigureAwait(false);
+            var result = await _transform.TransformAsync(payload).ConfigureAwait(false);
 
             if (NextNode is not null)
                 _ = NextNode.PushAsync(result, context).ConfigureAwait(false);
