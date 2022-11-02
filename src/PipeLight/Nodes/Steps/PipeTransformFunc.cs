@@ -1,6 +1,6 @@
-﻿using PipeLight.Pipes.Interfaces;
+﻿using PipeLight.Nodes.Steps.Interfaces;
 
-namespace PipeLight.Pipes;
+namespace PipeLight.Nodes.Steps;
 
 public class PipeTransformFunc<TIn, TOut> : IPipeTransform<TIn, TOut>
 {

@@ -7,6 +7,11 @@ using PipeLight.Pipes;
 namespace PipeLight.Extensions;
 public static class PipelineExtensions
 {
+    public static IPipeline<TIn, TOut> AddStep<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, Func<TOut, TOut> stepHandler)
+    {
+        var step = new FuncPipeStep<TOut>(stepHandler);
+        return pipeline.AddStep(step);
+    }
     public static IPipeline<TIn, TNewOut> AddTransform<TIn, TOut, TNewOut>(this IPipeline<TIn, TOut> pipeline, Func<TOut, TNewOut> transformHandler)
     {
         var transformNode = new PipeTransformFunc<TOut, TNewOut>(transformHandler);
@@ -17,7 +22,6 @@ public static class PipelineExtensions
         var sealedStep = new SealedActionStep<TOut>(sealHandler);
         return pipeline.Seal(sealedStep);
     }
-
     public static ISealedPipeline<TIn> Seal<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, ISealedStep<TOut> lastStep)
     {
         var pipeNode = new SealedPipe<TOut>(lastStep);

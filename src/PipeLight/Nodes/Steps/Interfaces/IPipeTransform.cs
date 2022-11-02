@@ -1,4 +1,4 @@
-﻿namespace PipeLight.Pipes.Interfaces;
+﻿namespace PipeLight.Nodes.Steps.Interfaces;
 
 public interface IPipeTransform<TIn, TOut>
 {

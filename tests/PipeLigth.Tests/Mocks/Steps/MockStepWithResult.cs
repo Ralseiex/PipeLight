@@ -1,4 +1,4 @@
-﻿using PipeLight.Pipes.Interfaces;
+﻿using PipeLight.Nodes.Steps.Interfaces;
 
 namespace PipeLigth.Tests.Mocks.Steps;
 

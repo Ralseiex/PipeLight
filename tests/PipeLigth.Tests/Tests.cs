@@ -123,21 +123,29 @@ public class Tests
     [Fact]
     public async Task DoublePushTest()
     {
-        var pipeline =
-                new PipelineFactory().CreatePipeline()
-                .AddStep(new IncrementPipeStep())
-                .AddTransform(new IntToStringTransform())
-                .AddStep(new LoggingPipeStep())
-                .AddStep(new LoggingPipeStep())
-                .AddTransform(new StringToIntTransform())
-                .AddStep(new IncrementPipeStep());
+        var factory = new PipelineFactory();
+        var pipeline = factory.CreatePipeline()
+            .AddStep((int p) => ++p)
+            .AddStep(p => ++p)
+            .AddTransform(p => p.ToString())
+            .AddStep(p =>
+            {
+                Console.WriteLine(p);
+                Debug.WriteLine(p);
+                return p;
+            })
+            .AddTransform(p => int.Parse(p))
+            .AddTransform(new IntToStringTransform())
+            .AddStep(new LoggingPipeStep())
+            .AddTransform(new StringToIntTransform())
+            .AddStep(new IncrementPipeStep());
 
         var task1 = pipeline.PushAsync(1);
         var task2 = pipeline.PushAsync(3);
 
         await Task.WhenAll(task1, task2);
 
-        Assert.True(task1.Result == 3 && task2.Result == 5);
+        Assert.True(task1.Result == 4 && task2.Result == 6);
     }
     [Fact]
     public async Task DoublePushTest2()

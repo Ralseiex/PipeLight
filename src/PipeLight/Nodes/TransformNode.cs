@@ -1,7 +1,7 @@
 ﻿using PipeLight.Interfaces;
 using PipeLight.Nodes.Interfaces;
-using PipeLight.Pipes;
-using PipeLight.Pipes.Interfaces;
+using PipeLight.Nodes.Steps;
+using PipeLight.Nodes.Steps.Interfaces;
 
 namespace PipeLight.Nodes;
 
