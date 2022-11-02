@@ -1,4 +1,4 @@
-﻿namespace TestProject1.Mocks;
+﻿namespace PipeLigth.Tests.Mocks;
 
 [Serializable]
 public class MockException : Exception

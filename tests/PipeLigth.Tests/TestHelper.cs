@@ -1,10 +1,10 @@
-﻿using TestProject1.Mocks;
+﻿using PipeLigth.Tests.Mocks;
 
-namespace TestProject1;
+namespace PipeLigth.Tests;
 
 internal class TestHelper
 {
-    public static MockPayload GetMockPayload(int value = 5, object refValue = null)
+    public static MockPayloadInt GetMockPayload(int value = 5, object refValue = null)
     {
         if (refValue is null)
             refValue = new();

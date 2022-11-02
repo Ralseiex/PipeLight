@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\PipeLight\PipeLight.csproj" />
+    <ProjectReference Include="..\..\src\PipeLight\PipeLight.csproj" />
   </ItemGroup>
 
 </Project>

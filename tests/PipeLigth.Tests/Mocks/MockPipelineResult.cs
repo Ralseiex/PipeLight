@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestProject1.Mocks;
+namespace PipeLigth.Tests.Mocks;
 
 internal class MockPipelineResult
 {
