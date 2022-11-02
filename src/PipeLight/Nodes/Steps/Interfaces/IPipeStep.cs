@@ -1,4 +1,4 @@
-﻿namespace PipeLight.Steps.Interfaces;
+﻿namespace PipeLight.Nodes.Steps.Interfaces;
 
 public interface IPipeStep<T>
 {

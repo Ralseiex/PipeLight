@@ -1,23 +1,26 @@
 ﻿using PipeLight.Interfaces;
-using PipeLight.Steps.Delegates;
-using PipeLight.Steps.Interfaces;
+using PipeLight.Nodes;
+using PipeLight.Nodes.Steps;
+using PipeLight.Nodes.Steps.Interfaces;
+using PipeLight.Pipes;
 
 namespace PipeLight.Extensions;
-
 public static class PipelineExtensions
 {
-    public static ISealedPipeline<TIn> Seal<TIn>(this Pipeline pipeline, IPipelineStepAsyncHandler<TIn> lastStepHandler)
-        => pipeline.AddStep(lastStepHandler);
-    public static ISealedPipeline<TIn> Seal<TIn>(this Pipeline pipeline, Action<TIn> action)
-        => pipeline.AddStep(action);
-    public static IPipeline<TIn, TNewOut> AddStep<TIn, TNewOut>(this Pipeline pipeline, Func<TIn, TNewOut> func)
+    public static IPipeline<TIn, TNewOut> AddFitting<TIn, TOut, TNewOut>(this IPipeline<TIn, TOut> pipeline, Func<TOut, TNewOut> fittingHandler)
     {
-        var step = new FuncStepAsync<TIn, TNewOut>(func);
-        return pipeline.AddStep(step);
+        var fittingNode = new PipeFittingFunc<TOut, TNewOut>(fittingHandler);
+        return pipeline.AddFitting(fittingNode);
     }
-    public static ISealedPipeline<TIn> AddStep<TIn>(this Pipeline pipeline, Action<TIn> action)
+    public static ISealedPipeline<TIn> Seal<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, Action<TOut> fittingHandler)
     {
-        var lastStep = new ActionSealAsync<TIn>(action);
-        return pipeline.AddStep(lastStep);
+        var sealedStep = new SealedActionStep<TOut>(fittingHandler);
+        return pipeline.Seal(sealedStep);
+    }
+
+    public static ISealedPipeline<TIn> Seal<TIn, TOut>(this IPipeline<TIn, TOut> pipeline, ISealedStep<TOut> lastStep)
+    {
+        var pipeNode = new SealedPipe<TOut>(lastStep);
+        return pipeline.Seal(pipeNode);
     }
 }

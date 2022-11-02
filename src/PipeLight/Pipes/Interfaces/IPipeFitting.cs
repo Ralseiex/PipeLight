@@ -1,4 +1,4 @@
-﻿namespace PipeLight.Steps.Interfaces;
+﻿namespace PipeLight.Pipes.Interfaces;
 
 public interface IPipeFitting<TIn, TOut>
 {

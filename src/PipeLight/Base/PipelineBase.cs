@@ -1,20 +1,21 @@
 ﻿using PipeLight.Interfaces;
-using PipeLight.Interfaces.Steps;
-using PipeLight.Steps.Delegates;
-using PipeLight.Steps.Interfaces;
+using PipeLight.Nodes;
+using PipeLight.Nodes.Interfaces;
+using PipeLight.Nodes.Steps.Interfaces;
+using PipeLight.Pipes;
+using PipeLight.Pipes.Interfaces;
 
 namespace PipeLight.Base;
 
 public abstract class PipelineBase<TIn> : ISealedPipeline<TIn>
 {
-    protected PipelineBase() { }
-    public PipelineBase(IPipelineStepEnter<TIn> firstStep)
+    public PipelineBase(IPipelineEnter<TIn> firstStep)
     {
         FirstStep = firstStep;
     }
 
 
-    public IPipelineStepEnter<TIn> FirstStep { get; init; }
+    public IPipelineEnter<TIn> FirstStep { get; init; }
 
 
     public async Task PushAsync(TIn data)
@@ -31,15 +32,15 @@ public abstract class PipelineBase<TIn> : ISealedPipeline<TIn>
 public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
 {
     protected PipelineBase() { }
-    public PipelineBase(IPipelineStepEnter<TIn> firstStep, IPipelineStepExit<TOut> lastStep)
+    public PipelineBase(IPipelineEnter<TIn> firstStep, IPipelineExit<TOut> lastStep)
     {
         FirstStep = firstStep;
         LastStep = lastStep;
     }
 
 
-    public IPipelineStepEnter<TIn> FirstStep { get; init; }
-    public IPipelineStepExit<TOut> LastStep { get; init; }
+    public IPipelineEnter<TIn> FirstStep { get; init; }
+    public IPipelineExit<TOut> LastStep { get; init; }
 
 
     public async Task<TOut> PushAsync(TIn data)
@@ -53,27 +54,38 @@ public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
         return (TOut)(await task);
     }
 
-    public IPipeline<TIn, TNewOut> AddStep<TNewOut>(IPipelineStepAsyncHandler<TOut, TNewOut> stepHandler)
+    public IPipeline<TIn, TOut> AddPipe(IPipe<TOut> pipeFitting)
     {
-        var newStep = new PipelineStep<TOut, TNewOut>(stepHandler);
+        var pipeNode = new PipeNode<TOut>(pipeFitting);
 
-        LastStep.NextStep = newStep;
-        return new Pipeline<TIn, TNewOut>(FirstStep, newStep);
+        LastStep.NextNode = pipeNode;
+        return new Pipeline<TIn, TOut>(FirstStep, pipeNode);
     }
-    public ISealedPipeline<TIn> AddStep(IPipelineStepAsyncHandler<TOut> lastStepHandler)
+    public IPipeline<TIn, TOut> AddStep(IPipeStep<TOut> step)
     {
-        var newStep = new PipelineStep<TOut>(lastStepHandler);
+        if (LastStep is PipeNode<TOut> node)
+        {
+            node.Pipe.AddStep(step);
+            return this;
+        }
+        var newNode = new PipeNode<TOut>(step);
 
-        LastStep.NextStep = newStep;
+        LastStep.NextNode = newNode;
+        return new Pipeline<TIn, TOut>(FirstStep, newNode);
+    }
+    public IPipeline<TIn, TNewOut> AddFitting<TNewOut>(IPipeFitting<TOut, TNewOut> pipeFitting)
+    {
+        var fittingNode = new FittingNode<TOut, TNewOut>(pipeFitting);
+
+        LastStep.NextNode = fittingNode;
+        return new Pipeline<TIn, TNewOut>(FirstStep, fittingNode);
+    }
+
+    public ISealedPipeline<TIn> Seal(ISealedPipe<TOut> lastStep)
+    {
+        var pipeNode = new SealedNode<TOut>(lastStep);
+
+        LastStep.NextNode = pipeNode;
         return new SealedPipeline<TIn>(FirstStep);
-    }
-    public IPipeline<TIn, TNewOut> AddStep<T, TNewOut>() where T : IPipelineStepAsyncHandler<TOut, TNewOut>
-    {
-        // TODO: Добавить ресолвер
-        var stepHandler = (IPipelineStepAsyncHandler<TOut, TNewOut>)Activator.CreateInstance(typeof(T));
-        var newStep = new PipelineStep<TOut, TNewOut>(stepHandler);
-
-        LastStep.NextStep = newStep;
-        return new Pipeline<TIn, TNewOut>(FirstStep, newStep);
     }
 }

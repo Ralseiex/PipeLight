@@ -1,12 +1,12 @@
 ﻿using PipeLight.Base;
-using PipeLight.Interfaces.Steps;
+using PipeLight.Nodes.Interfaces;
 
 namespace PipeLight;
 
 public class SealedPipeline<TIn> : PipelineBase<TIn>
 {
-    public SealedPipeline(IPipelineStepEnter<TIn> firstStep)
+    public SealedPipeline(IPipelineEnter<TIn> firstStep)
+        : base(firstStep)
     {
-        FirstStep = firstStep;
     }
 }
