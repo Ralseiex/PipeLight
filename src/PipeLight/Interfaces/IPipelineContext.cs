@@ -2,5 +2,5 @@
 
 public interface IPipelineContext
 {
-    TaskCompletionSource<object> PipelineCompletionSource { get; }
+    TaskCompletionSource<object?> PipelineCompletionSource { get; }
 }
