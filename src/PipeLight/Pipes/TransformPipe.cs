@@ -6,11 +6,11 @@ namespace PipeLight.Pipes;
 
 internal class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
 {
-    private readonly IPipelineTransformStep<TIn, TOut> _transformStep;
+    private readonly IPipelineTransform<TIn, TOut> _transform;
 
-    public TransformPipe(IPipelineTransformStep<TIn, TOut> transformStep)
+    public TransformPipe(IPipelineTransform<TIn, TOut> transform)
     {
-        _transformStep = transformStep;
+        _transform = transform;
     }
 
     public IPipeEnter<TOut>? NextPipe { get; set; }
@@ -19,7 +19,7 @@ internal class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
     {
         try
         {
-            var result = await _transformStep.Transform(payload).ConfigureAwait(false);
+            var result = await _transform.Transform(payload).ConfigureAwait(false);
 
             if (NextPipe is not null)
                 await NextPipe.Push(result, context).ConfigureAwait(false);

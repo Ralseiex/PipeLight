@@ -2,4 +2,12 @@
 
 namespace PipeLight.Context;
 
-public record PipelineContext(TaskCompletionSource<object?> PipelineCompletionSource) : IPipelineContext;
+public class PipelineContext : IPipelineContext
+{
+    public PipelineContext(TaskCompletionSource<object?> pipelineCompletionSource)
+    {
+        PipelineCompletionSource = pipelineCompletionSource;
+    }
+
+    public TaskCompletionSource<object?> PipelineCompletionSource { get; }
+}

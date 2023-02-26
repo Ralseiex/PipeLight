@@ -2,11 +2,11 @@
 
 namespace PipeLight.Steps;
 
-public class FuncTransformStep<TIn, TOut> : IPipelineTransformStep<TIn, TOut>
+public class FuncTransform<TIn, TOut> : IPipelineTransform<TIn, TOut>
 {
     private readonly Func<TIn, TOut> _handler;
 
-    public FuncTransformStep(Func<TIn, TOut> transformHandler)
+    public FuncTransform(Func<TIn, TOut> transformHandler)
     {
         _handler = transformHandler;
     }

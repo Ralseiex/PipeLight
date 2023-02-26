@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeLight.Tests", "tests\Pi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.Abstractions", "src\PipeLight.Abstractions\PipeLight.Abstractions.csproj", "{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.DependencyInjection", "src\PipeLight.DependencyInjection\PipeLight.DependencyInjection.csproj", "{EF025984-BA7E-4E63-BC58-01E3CB8C8564}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF025984-BA7E-4E63-BC58-01E3CB8C8564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF025984-BA7E-4E63-BC58-01E3CB8C8564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF025984-BA7E-4E63-BC58-01E3CB8C8564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF025984-BA7E-4E63-BC58-01E3CB8C8564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{063971BC-BEF0-4D21-B908-0B9A568135E6} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 		{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3} = {A5467C08-7D43-494C-B439-A5E6D5C709F9}
 		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
+		{EF025984-BA7E-4E63-BC58-01E3CB8C8564} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5AEF2C3-0EC9-4809-960B-546B622CB6AC}

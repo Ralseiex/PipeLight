@@ -35,6 +35,7 @@ public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
         _firstPipe = firstPipe;
     }
 
+
     public async Task<TOut> Push(TIn payload)
     {
         var pipelineCompletionSource = new TaskCompletionSource<object?>();

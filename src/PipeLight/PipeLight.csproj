@@ -3,19 +3,17 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Title>PipeLight</Title>
     <PackageId>PipeLight</PackageId>
     <Product>PipeLight</Product>
-    <Authors>Asriel Bukharov</Authors>
+    <Authors>Ralsei</Authors>
     <Description>PipeLight is a lightweight library that helps you to build sequential chains of code (pipelines) with clear syntax.</Description>
     <RepositoryUrl>https://github.com/Ralsei25/PipeLight</RepositoryUrl>
 	<PackageTags>pipelight; pipeline</PackageTags>
-    <Copyright>Copyright © Asriel Bukharov</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>$(VersionPrefix)1.0.1</Version>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

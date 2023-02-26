@@ -1,30 +1,35 @@
-﻿using PipeLight.Abstractions.Pipelines;
-using PipeLight.Abstractions.Pipes;
-using PipeLight.Abstractions.Steps;
-using PipeLight.Pipelines;
-using PipeLight.Pipes;
+﻿using PipeLight.Abstractions.Steps;
+using PipeLight.Steps;
 
 namespace PipeLight.Builders;
 
 public class PipelineBuilder
 {
-    public PipelineBuilder<T> AddStep<T>(IPipelineStep<T> step)
+    private readonly IStepResolver _stepResolver;
+
+    public PipelineBuilder(IStepResolver stepResolver)
     {
-        return new PipelineBuilder<T>(step);
+        _stepResolver = stepResolver;
     }
 
-    public PipelineBuilder<TIn, TNewOut> AddTransform<TIn, TNewOut>(IPipelineTransformStep<TIn, TNewOut> transformStep)
-    {
-        var transformPipe = new TransformPipe<TIn, TNewOut>(transformStep);
-        return new PipelineBuilder<TIn, TNewOut>(transformPipe);
-    }
+    public PipelineBuilder<T> AddStep<T>(IPipelineStep<T> step) 
+        => new(_stepResolver, step);
+    public PipelineBuilder<T> AddStep<T>(Type stepType) 
+        => new(_stepResolver, _stepResolver.ResolveStep<T>(stepType));
+    public PipelineBuilder<T> AddStep<T, TStep>() 
+        => AddStep<T>(typeof(TStep));
 
-    public SealedPipelineBuilder<T> Seal<T>(IPipelineSealedStep<T> singleStep)
-    {
-        var sealedPipe = new SealedPipe<T>(singleStep);
-        return new SealedPipelineBuilder<T>(sealedPipe);
-    }
+    public PipelineBuilder<TIn, TNewOut> AddTransform<TIn, TNewOut>(IPipelineTransform<TIn, TNewOut> transform) 
+        => new(_stepResolver, transform);
+    public PipelineBuilder<TIn, TNewOut> AddTransform<TIn, TNewOut>(Type transformType) 
+        => new(_stepResolver, transformType);
+    public PipelineBuilder<TIn, TNewOut> AddTransform<TIn, TNewOut, TStep>() 
+        => AddTransform<TIn, TNewOut>(typeof(TStep));
+
+    public SealedPipelineBuilder<T> Seal<T>(IPipelineSealedStep<T> singleStep) 
+        => new(_stepResolver, singleStep);
+    public SealedPipelineBuilder<T> Seal<T>(Type sealedStepType) 
+        => new(_stepResolver, sealedStepType);
+    public SealedPipelineBuilder<T> Seal<T, TStep>() 
+        => Seal<T>(typeof(TStep));
 }
-
-
-
