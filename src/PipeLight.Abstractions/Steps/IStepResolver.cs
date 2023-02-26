@@ -1,6 +1,4 @@
-using PipeLight.Abstractions.Steps;
-
-namespace PipeLight.Steps;
+namespace PipeLight.Abstractions.Steps;
 
 public interface IStepResolver
 {
