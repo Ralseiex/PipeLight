@@ -1,30 +1,29 @@
-﻿using PipeLight.Nodes.Steps.Interfaces;
-using PipeLight.Pipes.Interfaces;
+﻿using PipeLight.Abstractions.Context;
+using PipeLight.Abstractions.Pipes;
+using PipeLight.Abstractions.Steps;
 
 namespace PipeLight.Pipes;
 
-public class SealedPipe<T> : ISealedPipe<T>
+internal class SealedPipe<T> : ISealedPipe<T>
 {
-    private readonly List<IPipeStep<T>> _steps = new();
-    private readonly ISealedStep<T> _lastStep;
+    private readonly IPipelineSealedStep<T> _step;
 
-    public SealedPipe(ISealedStep<T> lastStep)
+    public SealedPipe(IPipelineSealedStep<T> step)
     {
-        _lastStep = lastStep;
-    }
-    public SealedPipe(IPipe<T> pipe, ISealedStep<T> lastStep)
-    {
-        _steps = new(pipe.Steps);
-        _lastStep = lastStep;
+        _step = step;
     }
 
-    public async Task PushAsync(T payload)
+
+    public async Task Push(T payload, IPipelineContext context)
     {
-        var result = payload;
-        foreach (var step in _steps)
+        try
         {
-            result = await step.ExecuteStepAsync(result);
+            await _step.Execute(payload).ConfigureAwait(false);
+            context.PipelineCompletionSource.SetResult(null);
         }
-        await _lastStep.ExecuteSealedStepAsync(result);
+        catch (Exception ex)
+        {
+            context.PipelineCompletionSource.SetException(ex);
+        }
     }
 }

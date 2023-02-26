@@ -9,7 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2FA8711D-F0F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A5467C08-7D43-494C-B439-A5E6D5C709F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeLigth.Tests", "tests\PipeLigth.Tests\PipeLigth.Tests.csproj", "{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeLight.Tests", "tests\PipeLight.Tests\PipeLight.Tests.csproj", "{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.Abstractions", "src\PipeLight.Abstractions\PipeLight.Abstractions.csproj", "{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{063971BC-BEF0-4D21-B908-0B9A568135E6} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 		{C1FD8F1F-A2DA-443B-B104-85925A6D0DC3} = {A5467C08-7D43-494C-B439-A5E6D5C709F9}
+		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5AEF2C3-0EC9-4809-960B-546B622CB6AC}
