@@ -4,7 +4,7 @@ using PipeLight.Abstractions.Steps;
 
 namespace PipeLight.Pipes;
 
-internal class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
+public class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
 {
     private readonly IPipelineTransform<TIn, TOut> _transform;
 
@@ -19,6 +19,7 @@ internal class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
     {
         try
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             var result = await _transform.Transform(payload).ConfigureAwait(false);
 
             if (NextPipe is not null)

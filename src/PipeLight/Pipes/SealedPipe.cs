@@ -18,6 +18,7 @@ internal class SealedPipe<T> : ISealedPipe<T>
     {
         try
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             await _step.Execute(payload).ConfigureAwait(false);
             context.PipelineCompletionSource.SetResult(null);
         }

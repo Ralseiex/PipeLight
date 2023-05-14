@@ -1,13 +1,13 @@
-﻿using PipeLight.Abstractions.Pipelines;
+﻿using PipeLight.Abstractions.Builders;
+using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
 using PipeLight.Pipelines;
 using PipeLight.Pipes;
-using PipeLight.Steps;
 
 namespace PipeLight.Builders;
 
-public class PipelineBuilder<TIn, TOut>
+public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
 {
     private readonly List<IPipelineStep<TOut>> _steps = new();
     private readonly IStepResolver _stepResolver;
@@ -46,20 +46,20 @@ public class PipelineBuilder<TIn, TOut>
         _lastPipe = transformPipe;
     } 
 
-    public PipelineBuilder<TIn, TOut> AddStep(IPipelineStep<TOut> step)
+    public IPipelineBuilder<TIn, TOut> AddStep(IPipelineStep<TOut> step)
     {
         _steps.Add(step);
         return this;
     }
-    public PipelineBuilder<TIn, TOut> AddStep(Type stepType)
+    public IPipelineBuilder<TIn, TOut> AddStep(Type stepType)
     {
         var step = _stepResolver.ResolveStep<TOut>(stepType);
         return AddStep(step);
     }
-    public PipelineBuilder<TIn, TOut> AddStep<TStep>()
+    public IPipelineBuilder<TIn, TOut> AddStep<TStep>()
         => AddStep(typeof(TStep));
 
-    public PipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(IPipelineTransform<TOut, TNewOut> transform)
+    public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(IPipelineTransform<TOut, TNewOut> transform)
     {
         var currentPipe = new ActionPipe<TOut>(_steps);
         _lastPipe.NextPipe = currentPipe;
@@ -68,15 +68,15 @@ public class PipelineBuilder<TIn, TOut>
         
         return new PipelineBuilder<TIn, TNewOut>(_stepResolver, _firstPipe, transformPipe);
     }
-    public PipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(Type transformType)
+    public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(Type transformType)
     {
         var transform = _stepResolver.ResolveTransform<TOut, TNewOut>(transformType);
         return AddTransform(transform);
     }
-    public PipelineBuilder<TIn, TNewOut> AddTransform<TNewOut, TStep>()
+    public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut, TStep>()
         => AddTransform<TNewOut>(typeof(TStep));
 
-    public SealedPipelineBuilder<TIn> Seal(IPipelineSealedStep<TOut> lastStep)
+    public ISealedPipelineBuilder<TIn> Seal(IPipelineSealedStep<TOut> lastStep)
     {
         var currentPipe = new ActionPipe<TOut>(_steps);
         _lastPipe.NextPipe = currentPipe;
@@ -85,13 +85,13 @@ public class PipelineBuilder<TIn, TOut>
 
         return new SealedPipelineBuilder<TIn>(_stepResolver, _firstPipe);
     }
-    public SealedPipelineBuilder<TIn> Seal(Type sealedStepType)
+    public ISealedPipelineBuilder<TIn> Seal(Type sealedStepType)
     {
         var sealedStep = _stepResolver.ResolveSealedStep<TOut>(sealedStepType);
         return Seal(sealedStep);
     }
 
-    public SealedPipelineBuilder<TIn> Seal<TStep>()
+    public ISealedPipelineBuilder<TIn> Seal<TStep>()
         => Seal(typeof(TStep));
     
     public IPipeline<TIn, TOut> Build()

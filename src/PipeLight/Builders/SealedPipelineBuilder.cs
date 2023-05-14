@@ -1,13 +1,13 @@
-﻿using PipeLight.Abstractions.Pipelines;
+﻿using PipeLight.Abstractions.Builders;
+using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
 using PipeLight.Pipelines;
 using PipeLight.Pipes;
-using PipeLight.Steps;
 
 namespace PipeLight.Builders;
 
-public class SealedPipelineBuilder<T>
+public class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
 {
     private readonly IStepResolver _stepResolver;
     private readonly IPipeEnter<T> _firstPipe;

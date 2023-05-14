@@ -19,10 +19,9 @@ internal class ActionPipe<T> : IActionPipe<T>
     {
         try
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             foreach (var step in _steps)
-            {
                 payload = await step.Execute(payload).ConfigureAwait(false);
-            }
 
             if (NextPipe is not null)
                 await NextPipe.Push(payload, context).ConfigureAwait(false);

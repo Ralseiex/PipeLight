@@ -14,13 +14,11 @@ public class Pipeline<T> : IPipeline<T>
         _steps = steps;
     }
 
-    public async Task<T> Push(T payload)
+    public async Task<T> Push(T payload, CancellationToken cancellationToken = default)
     {
         var result = payload;
         foreach (var step in _steps)
-        {
             result = await step.Execute(result);
-        }
 
         return result;
     }
@@ -36,10 +34,10 @@ public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
     }
 
 
-    public async Task<TOut> Push(TIn payload)
+    public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
     {
         var pipelineCompletionSource = new TaskCompletionSource<object?>();
-        var context = new PipelineContext(pipelineCompletionSource);
+        var context = new PipelineContext(pipelineCompletionSource, cancellationToken);
 
         await _firstPipe.Push(payload, context).ConfigureAwait(false);
 
