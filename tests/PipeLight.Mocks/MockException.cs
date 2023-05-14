@@ -1,4 +1,4 @@
-﻿namespace PipeLight.Tests.Mocks;
+﻿namespace PipeLight.Mocks;
 
 [Serializable]
 public class MockException : Exception

@@ -1,6 +1,6 @@
-﻿namespace PipeLight.Tests.Mocks;
+﻿namespace PipeLight.Mocks;
 
-internal class MockPipelineResult
+public class MockPipelineResult
 {
     public int Value { get; set; }
     public object? RefValue { get; set; }

@@ -1,8 +1,8 @@
 ﻿using PipeLight.Abstractions.Steps;
 
-namespace PipeLight.Tests.Mocks.Steps;
+namespace PipeLight.Mocks.Steps;
 
-internal class IntToStringTransform : IPipelineTransformStep<int, string>
+public class IntToStringTransform : IPipelineTransform<int, string>
 {
     public Task<string> Transform(int payload)
     {

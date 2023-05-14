@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using PipeLight.Abstractions.Builders;
 using PipeLight.Builders;
 using PipeLight.Extensions;
-using PipeLight.Tests.Mocks;
-using PipeLight.Tests.Mocks.Steps;
+using PipeLight.Mocks;
+using PipeLight.Mocks.Steps;
+using PipeLight.Steps;
 
 namespace PipeLight.Tests;
 
@@ -10,10 +12,12 @@ public class Tests
 {
     #region Creation Tests
 
+    private IPipelineBuilder GetBuilder => new PipelineBuilder(new ActivatorStepResolver());
+    
     [Fact]
     public void AddAsyncStep()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .AddStep(new MockStep())
             .AddStep(new MockStep())
             .AddStep(new MockStep())
@@ -23,14 +27,14 @@ public class Tests
     [Fact]
     public void AddAsyncSealStepTest()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .Seal(new MockSeal());
         Assert.NotNull(pipeline);
     }
     [Fact]
     public void AddAsyncSealTest()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .Seal(new MockSeal());
         Assert.NotNull(pipeline);
     }
@@ -43,12 +47,12 @@ public class Tests
     public async Task PushAsyncTest()
     {
         var payload = TestHelper.GetMockPayload();
-        var builder = new PipelineBuilder();
+        var builder = GetBuilder;
         var pipeline = builder
             .AddStep(new MockStep())
             .AddStep(new MockStep())
             .AddStep(new MockStep())
-            .AddTransform(new MockStepWithResult())
+            .AddTransform(new MockWithResult())
             .Build();
 
         var result = await pipeline.Push(payload);
@@ -63,8 +67,8 @@ public class Tests
     {
         var payload1 = TestHelper.GetMockPayload(5);
         var payload2 = TestHelper.GetMockPayload(6);
-        var pipeline = new PipelineBuilder()
-            .AddTransform(new MockStepWithResult())
+        var pipeline = GetBuilder
+            .AddTransform(new MockWithResult())
             .Build();
 
         var result1 = await pipeline.Push(payload1);
@@ -79,7 +83,7 @@ public class Tests
     public async Task ExceptionInAsyncPipelineTest()
     {
         var payload = TestHelper.GetMockPayload();
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .AddStep(new MockStep())
             .AddStep(new MockStep())
             .AddStep(new MockStepWithException())
@@ -93,7 +97,7 @@ public class Tests
     [Fact]
     public async Task IncrementWithTransformTest()
     {
-        var pipeline1 = new PipelineBuilder()
+        var pipeline1 = GetBuilder
             .AddTransform(new StringToIntTransform())
             .AddStep(new LoggingPipeStep(1))
             .AddStep(new IncrementPipeStep())
@@ -106,7 +110,7 @@ public class Tests
             .AddStep(new LoggingPipeStep(5))
             .Build();
 
-        var pipeline2 =new PipelineBuilder()
+        var pipeline2 =GetBuilder
             .AddStep(new IncrementPipeStep())
             .AddTransform(new IntToStringTransform())
             .AddStep(new LoggingPipeStep())
@@ -125,7 +129,7 @@ public class Tests
     [Fact]
     public async Task IncrementTest()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .AddStep(new IncrementPipeStep())
             .AddStep(new IncrementPipeStep())
             .Build();
@@ -137,7 +141,7 @@ public class Tests
     [Fact]
     public async Task DoublePushTest()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
             .AddStep((int p) => ++p)
             .AddStep(p => ++p)
             .AddTransform(p => p.ToString())
@@ -165,7 +169,7 @@ public class Tests
     [Fact]
     public async Task DoublePushTest2()
     {
-        var pipeline = new PipelineBuilder()
+        var pipeline = GetBuilder
                 .AddStep((int x) => ++x)
                 .AddStep(x => ++x)
                 .AddStep(x => ++x)

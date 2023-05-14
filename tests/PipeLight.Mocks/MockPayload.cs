@@ -1,13 +1,13 @@
-﻿namespace PipeLight.Tests.Mocks;
+﻿namespace PipeLight.Mocks;
 
-internal class MockPayloadInt
+public class MockPayloadInt
 {
     public int Value { get; set; }
     public object? RefValue { get; set; }
 }
 
 
-internal class MockPayloadString
+public class MockPayloadString
 {
     public string? Value { get; set; }
     public object? RefValue { get; set; }

@@ -1,4 +1,4 @@
-﻿using PipeLight.Tests.Mocks;
+﻿using PipeLight.Mocks;
 
 namespace PipeLight.Tests;
 

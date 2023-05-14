@@ -1,8 +1,8 @@
 ﻿using PipeLight.Abstractions.Steps;
 
-namespace PipeLight.Tests.Mocks.Steps;
+namespace PipeLight.Mocks.Steps;
 
-internal class IncrementPipeStep : IPipelineStep<int>
+public class IncrementPipeStep : IPipelineStep<int>
 {
     public async Task<int> Execute(int payload)
     {

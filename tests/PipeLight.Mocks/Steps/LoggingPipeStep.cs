@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using PipeLight.Abstractions.Steps;
 
-namespace PipeLight.Tests.Mocks.Steps;
+namespace PipeLight.Mocks.Steps;
 
-internal class LoggingPipeStep : IPipelineStep<string>, IPipelineStep<int>
+public class LoggingPipeStep : IPipelineStep<string>, IPipelineStep<int>
 {
     private readonly string? _message;
 

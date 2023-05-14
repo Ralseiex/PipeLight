@@ -1,8 +1,8 @@
 ﻿using PipeLight.Abstractions.Steps;
 
-namespace PipeLight.Tests.Mocks.Steps;
+namespace PipeLight.Mocks.Steps;
 
-internal class MockStepWithResult : IPipelineTransformStep<MockPayloadInt, MockPipelineResult>
+public class MockWithResult : IPipelineTransform<MockPayloadInt, MockPipelineResult>
 {
     public async Task<MockPipelineResult> Transform(MockPayloadInt payload)
     {
