@@ -10,9 +10,11 @@ public class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
 
     public TransformPipe(IPipelineTransform<TIn, TOut> transform)
     {
+        Id = Guid.NewGuid();
         _transform = transform;
     }
 
+    public Guid Id { get; }
     public IPipeEnter<TOut>? NextPipe { get; set; }
 
     public async Task Push(TIn payload, IPipelineContext context)

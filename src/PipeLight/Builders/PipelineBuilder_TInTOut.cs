@@ -2,6 +2,7 @@
 using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
+using PipeLight.Extensions;
 using PipeLight.Pipelines;
 using PipeLight.Pipes;
 
@@ -9,22 +10,22 @@ namespace PipeLight.Builders;
 
 public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
 {
-    private readonly List<IPipelineStep<TOut>> _steps = new();
     private readonly IStepResolver _stepResolver;
     private readonly IPipeEnter<TIn> _firstPipe;
-    private readonly IPipeExit<TOut> _lastPipe;
+    private IPipeExit<TOut> _lastPipe;
+    private readonly List<IPipeEnter<TIn>> _pipes;
 
     private PipelineBuilder(IStepResolver stepResolver, IPipeEnter<TIn> firstPipe, IPipeExit<TOut> lastPipe)
     {
         _stepResolver = stepResolver;
         _firstPipe = firstPipe;
         _lastPipe = lastPipe;
+        _pipes = new List<IPipeEnter<TIn>>();
     }
 
-    internal PipelineBuilder(IStepResolver stepResolver, IActionPipe<TIn> firstPipe, ITransformPipe<TIn, TOut> transform) 
+    internal PipelineBuilder(IStepResolver stepResolver, IPipeEnter<TIn> firstPipe, ITransformPipe<TIn, TOut> transform) 
     {
         _stepResolver = stepResolver;
-        firstPipe.NextPipe = transform;
         _firstPipe = firstPipe;
         _lastPipe = transform;
     }
@@ -48,56 +49,48 @@ public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
 
     public IPipelineBuilder<TIn, TOut> AddStep(IPipelineStep<TOut> step)
     {
-        _steps.Add(step);
+        var pipe = new ActionPipe<TOut>(step);
+        SetNextPipe(pipe);
+        _pipes.Add(pipe);
         return this;
     }
-    public IPipelineBuilder<TIn, TOut> AddStep(Type stepType)
-    {
-        var step = _stepResolver.ResolveStep<TOut>(stepType);
-        return AddStep(step);
-    }
+    public IPipelineBuilder<TIn, TOut> AddStep(Type stepType) 
+        => AddStep(_stepResolver.ResolveStep<TOut>(stepType));
+
     public IPipelineBuilder<TIn, TOut> AddStep<TStep>()
         => AddStep(typeof(TStep));
 
     public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(IPipelineTransform<TOut, TNewOut> transform)
     {
-        var currentPipe = new ActionPipe<TOut>(_steps);
-        _lastPipe.NextPipe = currentPipe;
         var transformPipe = new TransformPipe<TOut, TNewOut>(transform);
-        currentPipe.NextPipe = transformPipe;
-        
+        _lastPipe.NextPipe = transformPipe;
+        _pipes.Add(transformPipe);
         return new PipelineBuilder<TIn, TNewOut>(_stepResolver, _firstPipe, transformPipe);
     }
-    public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(Type transformType)
-    {
-        var transform = _stepResolver.ResolveTransform<TOut, TNewOut>(transformType);
-        return AddTransform(transform);
-    }
+    
+    public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(Type transformType) 
+        => AddTransform(_stepResolver.ResolveTransform<TOut, TNewOut>(transformType));
+
     public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut, TStep>()
         => AddTransform<TNewOut>(typeof(TStep));
 
     public ISealedPipelineBuilder<TIn> Seal(IPipelineSealedStep<TOut> lastStep)
     {
-        var currentPipe = new ActionPipe<TOut>(_steps);
-        _lastPipe.NextPipe = currentPipe;
-        var sealedPipe = new SealedPipe<TOut>(lastStep);
-        currentPipe.NextPipe = sealedPipe;
-
+        _lastPipe.NextPipe = new SealedPipe<TOut>(lastStep);
         return new SealedPipelineBuilder<TIn>(_stepResolver, _firstPipe);
     }
-    public ISealedPipelineBuilder<TIn> Seal(Type sealedStepType)
-    {
-        var sealedStep = _stepResolver.ResolveSealedStep<TOut>(sealedStepType);
-        return Seal(sealedStep);
-    }
+    public ISealedPipelineBuilder<TIn> Seal(Type sealedStepType) 
+        => Seal(_stepResolver.ResolveSealedStep<TOut>(sealedStepType));
 
     public ISealedPipelineBuilder<TIn> Seal<TStep>()
         => Seal(typeof(TStep));
     
-    public IPipeline<TIn, TOut> Build()
+    public IPipeline<TIn, TOut> Build() 
+        => new Pipeline<TIn, TOut>(_firstPipe, _pipes.ToPipesDictionary());
+    
+    private void SetNextPipe(IActionPipe<TOut> nextPipe)
     {
-        var currentPipe = new ActionPipe<TOut>(_steps);
-        _lastPipe.NextPipe = currentPipe;
-        return new Pipeline<TIn, TOut>(_firstPipe);
+        _lastPipe.NextPipe = nextPipe;
+        _lastPipe = nextPipe;
     }
 }

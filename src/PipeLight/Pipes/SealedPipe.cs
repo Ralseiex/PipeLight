@@ -10,9 +10,11 @@ internal class SealedPipe<T> : ISealedPipe<T>
 
     public SealedPipe(IPipelineSealedStep<T> step)
     {
+        Id = Guid.NewGuid();
         _step = step;
     }
 
+    public Guid Id { get; }
 
     public async Task Push(T payload, IPipelineContext context)
     {

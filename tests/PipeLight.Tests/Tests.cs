@@ -15,6 +15,16 @@ public class Tests
     private IPipelineBuilder GetBuilder => new PipelineBuilder(new ActivatorStepResolver());
     
     [Fact]
+    public void ManualTest()
+    {
+        // var pipeline = new PipelineBuilder<int>(new ActivatorStepResolver())
+        //     .AddStep(new MockStep())
+        //     .AddStep(new MockStep())
+        //     .AddStep(new MockStep())
+        //     .Seal(new MockSeal());
+        // Assert.NotNull(pipeline);
+    }
+    [Fact]
     public void AddAsyncStep()
     {
         var pipeline = GetBuilder

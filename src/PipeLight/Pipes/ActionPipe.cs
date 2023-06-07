@@ -6,13 +6,15 @@ namespace PipeLight.Pipes;
 
 internal class ActionPipe<T> : IActionPipe<T>
 {
-    private readonly IEnumerable<IPipelineStep<T>> _steps;
+    private readonly IPipelineStep<T> _step;
 
-    public ActionPipe(IEnumerable<IPipelineStep<T>> steps)
+    public ActionPipe(IPipelineStep<T> step)
     {
-        _steps = steps;
+        Id = Guid.NewGuid();
+        _step = step;
     }
 
+    public Guid Id { get; }
     public IPipeEnter<T>? NextPipe { get; set; }
 
     public async Task Push(T payload, IPipelineContext context)
@@ -20,13 +22,12 @@ internal class ActionPipe<T> : IActionPipe<T>
         try
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-            foreach (var step in _steps)
-                payload = await step.Execute(payload).ConfigureAwait(false);
+            var result = await _step.Execute(payload).ConfigureAwait(false);
 
             if (NextPipe is not null)
-                await NextPipe.Push(payload, context).ConfigureAwait(false);
+                await NextPipe.Push(result, context).ConfigureAwait(false);
             else
-                context.PipelineCompletionSource.SetResult(payload);
+                context.PipelineCompletionSource.SetResult(result);
         }
         catch (Exception ex)
         {

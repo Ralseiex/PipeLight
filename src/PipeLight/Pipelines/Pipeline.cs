@@ -1,46 +1,47 @@
 ﻿using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
-using PipeLight.Abstractions.Steps;
 using PipeLight.Context;
+using PipeLight.Exceptions;
 
 namespace PipeLight.Pipelines;
 
-public class Pipeline<T> : IPipeline<T>
+public class Pipeline<T> : Pipeline<T, T>, IPipeline<T>
 {
-    private readonly IEnumerable<IPipelineStep<T>> _steps;
-
-    public Pipeline(IEnumerable<IPipelineStep<T>> steps)
+    public Pipeline(IPipeEnter<T> firstPipe, PipesDictionary<T> pipes) : base(firstPipe, pipes)
     {
-        _steps = steps;
-    }
-
-    public async Task<T> Push(T payload, CancellationToken cancellationToken = default)
-    {
-        var result = payload;
-        foreach (var step in _steps)
-            result = await step.Execute(result);
-
-        return result;
     }
 }
 
 public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
 {
     private readonly IPipeEnter<TIn> _firstPipe;
+    private readonly ReadOnlyPipesDictionary<TIn> _pipes;
 
-    public Pipeline(IPipeEnter<TIn> firstPipe)
+    public Pipeline(IPipeEnter<TIn> firstPipe, PipesDictionary<TIn> pipes)
     {
         _firstPipe = firstPipe;
+        _pipes = new ReadOnlyPipesDictionary<TIn>(pipes);
+    }
+    
+    public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
+    {
+        return (TOut)await Push(payload, _firstPipe, cancellationToken).ConfigureAwait(false);
     }
 
+    public async Task<TOut> PushToPipe(TIn payload, Guid pipeId, CancellationToken cancellationToken = default)
+    {
+        if (!_pipes.ContainsKey(pipeId))
+            throw new PipeNotFoundException();
+        return (TOut)await Push(payload, _pipes[pipeId], cancellationToken).ConfigureAwait(false);
+    }
 
-    public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
+    private static Task<object> Push(TIn payload, IPipeEnter<TIn> enterPipe, CancellationToken cancellationToken)
     {
         var pipelineCompletionSource = new TaskCompletionSource<object?>();
         var context = new PipelineContext(pipelineCompletionSource, cancellationToken);
 
-        await _firstPipe.Push(payload, context).ConfigureAwait(false);
+        enterPipe.Push(payload, context);
 
-        return (TOut)(await pipelineCompletionSource.Task)!;
+        return pipelineCompletionSource.Task!;
     }
 }
