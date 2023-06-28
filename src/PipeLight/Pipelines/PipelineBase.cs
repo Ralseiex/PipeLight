@@ -7,18 +7,17 @@
 //
 // public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
 // {
-//     private readonly IPipeline<TIn, TOut> _innerPipeline;
-//
-//     protected PipelineBase()
-//     {
-//         var builder = new PipelineBuilder<TIn>(new ActivatorStepResolver());
-//         _innerPipeline = Configure(builder).Build();
-//     }
+//     private readonly IPipeline<TIn, TOut>? _innerPipeline;
 //
 //     protected abstract IPipelineBuilder<TIn, TOut> Configure(IPipelineBuilder<TIn> builder);
 //
 //     public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
 //     {
+//         if (_innerPipeline is null)
+//         {
+//             
+//             _innerPipeline = Configure();
+//         }
 //         return await _innerPipeline.Push(payload, cancellationToken);
 //     }
 // }
@@ -27,6 +26,7 @@
 // {
 //     private readonly IPipeline<T> _innerPipeline;
 //
+//     
 //     protected PipelineBase()
 //     {
 //         var builder = new PipelineBuilder<T>(new ActivatorStepResolver());

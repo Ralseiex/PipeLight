@@ -5,36 +5,43 @@ using PipeLight.Exceptions;
 
 namespace PipeLight.Pipelines;
 
-public class SealedPipeline<T> : ISealedPipeline<T>
+public class SealedPipeline<TIn> : ISealedPipeline<TIn>
 {
-    private readonly IPipeEnter<T> _firstPipe;
-    private readonly ReadOnlyPipesDictionary<T> _pipes;
+    private readonly IPipeEnter<TIn> _firstPipe;
+    private readonly ReadOnlyPipesDictionary _pipes;
     
-    public SealedPipeline(IPipeEnter<T> firstPipe, PipesDictionary<T> pipes)
+    public SealedPipeline(IPipeEnter<TIn> firstPipe, PipesDictionary pipes)
     {
         _firstPipe = firstPipe;
-        _pipes = new ReadOnlyPipesDictionary<T>(pipes);
+        _pipes = new ReadOnlyPipesDictionary(pipes);
     }
     
-    public async Task Push(T payload, CancellationToken cancellationToken = default)
+    public async Task Push(TIn payload, CancellationToken cancellationToken = default)
     {
         await Push(payload, _firstPipe, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task PushToPipe(T payload, Guid pipeId, CancellationToken cancellationToken = default)
+    public async Task PushToPipe(TIn payload, Guid pipeId, CancellationToken cancellationToken = default)
     {
         if (!_pipes.ContainsKey(pipeId))
             throw new PipeNotFoundException();
         await Push(payload, _pipes[pipeId], cancellationToken).ConfigureAwait(false);
     }
     
-    private static Task Push(T payload, IPipeEnter<T> enterPipe, CancellationToken cancellationToken)
+    private static Task Push(TIn payload, IPipeEnter enterPipe, CancellationToken cancellationToken)
     {
         var pipelineCompletionSource = new TaskCompletionSource<object?>();
-        var context = new PipelineContext(pipelineCompletionSource, cancellationToken);
+        var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
 
         enterPipe.Push(payload, context);
 
         return pipelineCompletionSource.Task;
+    }
+    
+    public Task PushToPipe(object payload, Guid pipeId, CancellationToken cancellationToken = default)
+    {
+        if (payload is not TIn typedPayload)
+            throw new InvalidPayloadTypeException();
+        return PushToPipe(typedPayload, pipeId, cancellationToken);
     }
 }

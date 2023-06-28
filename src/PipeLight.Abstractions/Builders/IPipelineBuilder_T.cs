@@ -5,6 +5,7 @@ namespace PipeLight.Abstractions.Builders;
 
 public interface IPipelineBuilder<T>
 {
+    int PipelineLength { get; }
     IPipelineBuilder<T> AddStep(IPipelineStep<T> step);
     IPipelineBuilder<T> AddStep(Type stepType);
     IPipelineBuilder<T> AddStep<TStep>();
@@ -14,5 +15,5 @@ public interface IPipelineBuilder<T>
     ISealedPipelineBuilder<T> Seal(IPipelineSealedStep<T> lastStep);
     ISealedPipelineBuilder<T> Seal(Type sealedStepType);
     ISealedPipelineBuilder<T> Seal<TStep>();
-    IPipeline<T> Build();
+    IPipeline<T, T> Build();
 }
