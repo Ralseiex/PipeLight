@@ -5,9 +5,6 @@ namespace PipeLight.Factories;
 
 public class ActivatorPipelineBuilderFactory : IPipelineBuilderFactory
 {
-    public PipelineBuilder CreateBuilder() 
-        => new(new ActivatorStepResolver());
-
-    public PipelineBuilder<T> CreateBuilder<T>() 
+    public PipelineBuilder CreateBuilder()
         => new(new ActivatorStepResolver());
 }

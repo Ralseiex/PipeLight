@@ -1,42 +1,65 @@
-using PipeLight.Abstractions.Builders;
 using PipeLight.Abstractions.Pipelines;
-using PipeLight.Builders;
-using PipeLight.Steps;
+using PipeLight.Abstractions.Pipes;
+using PipeLight.Context;
 
 namespace PipeLight.Pipelines;
 
-public abstract class PipelineBase<TIn, TOut> : IPipeline<TIn, TOut>
+public abstract class PipelineCore<TIn>
 {
-    private readonly IPipeline<TIn, TOut> _innerPipeline;
+    protected readonly IPipeEnter<TIn> FirstPipe;
+    protected readonly ReadOnlyPipesDictionary Pipes;
 
-    protected PipelineBase()
+    protected PipelineCore(IPipeEnter<TIn> firstPipe, PipesDictionary pipes)
     {
-        var builder = new PipelineBuilder<TIn>(new ActivatorStepResolver());
-        _innerPipeline = Configure(builder).Build();
+        FirstPipe = firstPipe;
+        Pipes = new ReadOnlyPipesDictionary(pipes);
     }
 
-    protected abstract IPipelineBuilder<TIn, TOut> Configure(IPipelineBuilder<TIn> builder);
+    public IEnumerable<string> PipesHashes => Pipes.Keys;
 
-    public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
+    protected static Task<object> Push(TIn payload, IPipeEnter enterPipe, CancellationToken cancellationToken)
     {
-        return await _innerPipeline.Push(payload, cancellationToken);
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
+
+        var pipelineCompletionSource = new TaskCompletionSource<object?>();
+        var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
+
+        enterPipe.Push(payload, context);
+
+        return pipelineCompletionSource.Task!;
+    }
+
+    protected static Task<object> Push(object payload, IPipeEnter enterPipe, CancellationToken cancellationToken)
+    {
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
+
+        var pipelineCompletionSource = new TaskCompletionSource<object?>();
+        var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
+
+        enterPipe.Push(payload, context);
+
+        return pipelineCompletionSource.Task!;
     }
 }
 
-public abstract class PipelineBase<T> : IPipeline<T>
+public abstract class PipelineBase<TIn, TOut> : PipelineCore<TIn>, IPipeline<TIn, TOut>
 {
-    private readonly IPipeline<T> _innerPipeline;
-
-    protected PipelineBase()
+    protected PipelineBase(IPipeEnter<TIn> firstPipe, PipesDictionary pipes) : base(firstPipe, pipes)
     {
-        var builder = new PipelineBuilder<T>(new ActivatorStepResolver());
-        _innerPipeline = Configure(builder).Build();
     }
-    
-    protected abstract IPipelineBuilder<T> Configure(IPipelineBuilder<T> builder);
 
-    public Task<T> Push(T payload, CancellationToken cancellationToken = default)
+    public abstract Task<TOut> PushToPipe(object payload, string pipeId, CancellationToken cancellationToken = default);
+    public abstract Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default);
+}
+
+public abstract class SealedPipelineBase<TIn> : PipelineCore<TIn>, ISealedPipeline<TIn>
+{
+    protected SealedPipelineBase(IPipeEnter<TIn> firstPipe, PipesDictionary pipes) : base(firstPipe, pipes)
     {
-        return _innerPipeline.Push(payload, cancellationToken);
     }
+
+    public abstract Task PushToPipe(object payload, string pipeId, CancellationToken cancellationToken = default);
+    public abstract Task Push(TIn payload, CancellationToken cancellationToken = default);
 }

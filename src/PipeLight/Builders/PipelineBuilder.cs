@@ -7,10 +7,8 @@ public class PipelineBuilder : IPipelineBuilder
 {
     private readonly IStepResolver _stepResolver;
 
-    public PipelineBuilder(IStepResolver stepResolver)
-    {
-        _stepResolver = stepResolver;
-    }
+    public PipelineBuilder(IStepResolver stepResolver) 
+        => _stepResolver = stepResolver;
 
     public IPipelineBuilder<T> AddStep<T>(IPipelineStep<T> step) 
         => new PipelineBuilder<T>(_stepResolver, step);

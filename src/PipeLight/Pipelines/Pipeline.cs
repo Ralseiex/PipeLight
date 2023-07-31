@@ -1,46 +1,30 @@
-﻿using PipeLight.Abstractions.Pipelines;
-using PipeLight.Abstractions.Pipes;
-using PipeLight.Abstractions.Steps;
-using PipeLight.Context;
+﻿using PipeLight.Abstractions.Pipes;
+using PipeLight.Exceptions;
 
 namespace PipeLight.Pipelines;
 
-public class Pipeline<T> : IPipeline<T>
+public class Pipeline<TIn, TOut> : PipelineBase<TIn, TOut>
 {
-    private readonly IEnumerable<IPipelineStep<T>> _steps;
-
-    public Pipeline(IEnumerable<IPipelineStep<T>> steps)
+    public Pipeline(IPipeEnter<TIn> firstPipe, PipesDictionary pipes) : base(firstPipe, pipes)
     {
-        _steps = steps;
     }
 
-    public async Task<T> Push(T payload, CancellationToken cancellationToken = default)
+    public override async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
     {
-        var result = payload;
-        foreach (var step in _steps)
-            result = await step.Execute(result);
-
-        return result;
-    }
-}
-
-public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
-{
-    private readonly IPipeEnter<TIn> _firstPipe;
-
-    public Pipeline(IPipeEnter<TIn> firstPipe)
-    {
-        _firstPipe = firstPipe;
+        return (TOut)await Push(payload, FirstPipe, cancellationToken).ConfigureAwait(false);
     }
 
-
-    public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
+    public override async Task<TOut> PushToPipe(
+        object payload,
+        string pipeId,
+        CancellationToken cancellationToken = default)
     {
-        var pipelineCompletionSource = new TaskCompletionSource<object?>();
-        var context = new PipelineContext(pipelineCompletionSource, cancellationToken);
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
 
-        await _firstPipe.Push(payload, context).ConfigureAwait(false);
+        if (!Pipes.ContainsKey(pipeId))
+            throw new PipeNotFoundException();
 
-        return (TOut)(await pipelineCompletionSource.Task)!;
+        return (TOut)await Push(payload, Pipes[pipeId], cancellationToken);
     }
 }

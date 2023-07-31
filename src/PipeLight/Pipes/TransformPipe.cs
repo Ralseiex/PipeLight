@@ -1,6 +1,7 @@
 ﻿using PipeLight.Abstractions.Context;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
+using PipeLight.Exceptions;
 
 namespace PipeLight.Pipes;
 
@@ -10,7 +11,16 @@ public class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
 
     public TransformPipe(IPipelineTransform<TIn, TOut> transform)
     {
+        Id = Guid.NewGuid();
         _transform = transform;
+    }
+
+    public Guid Id { get; }
+
+    public Task Push(object payload, IPipelineContext context)
+    {
+        if (payload is not TIn typedPayload) throw new InvalidPayloadTypeException();
+        return Push(typedPayload, context);
     }
 
     public IPipeEnter<TOut>? NextPipe { get; set; }

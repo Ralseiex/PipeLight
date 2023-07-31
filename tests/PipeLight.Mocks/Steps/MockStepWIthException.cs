@@ -1,13 +1,5 @@
-﻿using PipeLight.Abstractions.Steps;
+﻿namespace PipeLight.Mocks.Steps;
 
-namespace PipeLight.Mocks.Steps;
-
-
-public class MockStepWithException : IPipelineStep<MockPayloadInt>
+public class MockStepWithException : StepWithException<MockException>
 {
-
-    public async Task<MockPayloadInt> Execute(MockPayloadInt payload)
-    {
-        throw new MockException();
-    }
 }

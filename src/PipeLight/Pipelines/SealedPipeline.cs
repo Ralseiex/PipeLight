@@ -1,24 +1,27 @@
-﻿using PipeLight.Abstractions.Pipelines;
-using PipeLight.Abstractions.Pipes;
-using PipeLight.Context;
+﻿using PipeLight.Abstractions.Pipes;
+using PipeLight.Exceptions;
 
 namespace PipeLight.Pipelines;
 
-public class SealedPipeline<T> : ISealedPipeline<T>
+public class SealedPipeline<TIn> : SealedPipelineBase<TIn>
 {
-    private readonly IPipeEnter<T> _firstPipe;
-    
-    public SealedPipeline(IPipeEnter<T> firstPipe)
+    public SealedPipeline(IPipeEnter<TIn> firstPipe, PipesDictionary pipes) : base(firstPipe, pipes)
     {
-        _firstPipe = firstPipe;
     }
-    
-    public async Task Push(T payload, CancellationToken cancellationToken = default)
-    {
-        var pipelineCompletionSource = new TaskCompletionSource<object?>();
-        var context = new PipelineContext(pipelineCompletionSource, cancellationToken);
 
-        await _firstPipe.Push(payload, context).ConfigureAwait(false);
-        await pipelineCompletionSource.Task;
+    public override async Task Push(TIn payload, CancellationToken cancellationToken = default)
+    {
+        await Push(payload, FirstPipe, cancellationToken).ConfigureAwait(false);
+    }
+
+    public override async Task PushToPipe(object payload, string pipeId, CancellationToken cancellationToken = default)
+    {
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
+
+        if (!Pipes.ContainsKey(pipeId))
+            throw new PipeNotFoundException();
+
+        await Push(payload, Pipes[pipeId], cancellationToken);
     }
 }

@@ -15,7 +15,4 @@ public class MsDiPipelineBuilderFactory : IPipelineBuilderFactory
 
     public PipelineBuilder CreateBuilder()
         => new(new MsDiStepResolver(_serviceScope.ServiceProvider));
-
-    public PipelineBuilder<T> CreateBuilder<T>()
-        => new(new MsDiStepResolver(_serviceScope.ServiceProvider));
 }
