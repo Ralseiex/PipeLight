@@ -30,6 +30,9 @@ public class SealedPipeline<TIn> : ISealedPipeline<TIn>
     
     private static Task Push(TIn payload, IPipeEnter enterPipe, CancellationToken cancellationToken)
     {
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
+
         var pipelineCompletionSource = new TaskCompletionSource<object?>();
         var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
 
