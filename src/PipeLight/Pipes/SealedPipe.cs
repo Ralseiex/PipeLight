@@ -16,6 +16,7 @@ internal class SealedPipe<T> : ISealedPipe<T>
     }
 
     public Guid Id { get; }
+
     public Task Push(object payload, IPipelineContext context)
     {
         if (payload is not T typedPayload) throw new InvalidPayloadTypeException();

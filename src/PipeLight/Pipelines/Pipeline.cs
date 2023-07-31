@@ -15,18 +15,20 @@ public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
         _firstPipe = firstPipe;
         _pipes = new ReadOnlyPipesDictionary(pipes);
     }
-    
+
+    public IEnumerable<string> PipesHashes => _pipes.Keys;
+
     public async Task<TOut> Push(TIn payload, CancellationToken cancellationToken = default)
     {
         return (TOut)await Push(payload, _firstPipe, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<TOut> PushToPipe(TIn payload, Guid pipeId, CancellationToken cancellationToken = default)
+    public async Task<TOut> PushToPipe(object payload, string pipeId, CancellationToken cancellationToken = default)
     {
         if (payload is null)
             throw new NullReferenceException(nameof(payload));
-        
-        if (!_pipes.ContainsKey(pipeId)) 
+
+        if (!_pipes.ContainsKey(pipeId))
             throw new PipeNotFoundException();
 
         return (TOut)await Push(payload, _pipes[pipeId], cancellationToken);
@@ -36,7 +38,7 @@ public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
     {
         if (payload is null)
             throw new NullReferenceException(nameof(payload));
-        
+
         var pipelineCompletionSource = new TaskCompletionSource<object?>();
         var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
 
@@ -45,9 +47,16 @@ public class Pipeline<TIn, TOut> : IPipeline<TIn, TOut>
         return pipelineCompletionSource.Task!;
     }
 
-    public Task<TOut> PushToPipe(object payload, Guid pipeId, CancellationToken cancellationToken = default)
+    private static Task<object> Push(object payload, IPipeEnter enterPipe, CancellationToken cancellationToken)
     {
-        if (payload is not TIn typedPayload) throw new InvalidPayloadTypeException();
-        return PushToPipe(typedPayload, pipeId, cancellationToken);
+        if (payload is null)
+            throw new NullReferenceException(nameof(payload));
+
+        var pipelineCompletionSource = new TaskCompletionSource<object?>();
+        var context = new PipelineContext(Guid.NewGuid(), pipelineCompletionSource, cancellationToken);
+
+        enterPipe.Push(payload, context);
+
+        return pipelineCompletionSource.Task!;
     }
 }
