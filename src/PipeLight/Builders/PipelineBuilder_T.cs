@@ -71,8 +71,8 @@ public class PipelineBuilder<T> : IPipelineBuilder<T>
     public ISealedPipelineBuilder<T> Seal<TStep>()
         => Seal(typeof(TStep));
 
-    public IPipeline<T, T> Build()
-        => new Pipeline<T, T>(_firstPipe, _pipes.ToPipesDictionary());
+    public IPipelineWithOutput<T, T> Build()
+        => new PipelineWithOutput<T, T>(_firstPipe, _pipes.ToPipesDictionary());
 
     private void SetNextPipe(IActionPipe<T> nextPipe)
     {

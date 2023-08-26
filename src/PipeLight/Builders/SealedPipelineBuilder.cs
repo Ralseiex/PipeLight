@@ -46,6 +46,6 @@ public class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
 
     public int PipelineLength => _pipes.Count;
 
-    public ISealedPipeline<T> Build()
-        => new SealedPipeline<T>(_firstPipe, _pipes.ToPipesDictionary());
+    public IPipeline<T> Build()
+        => new Pipeline<T>(_firstPipe);
 }

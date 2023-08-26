@@ -101,8 +101,8 @@ public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
     public ISealedPipelineBuilder<TIn> Seal<TStep>()
         => Seal(typeof(TStep));
     
-    public IPipeline<TIn, TOut> Build() 
-        => new Pipeline<TIn, TOut>(_firstPipe, _pipes.ToPipesDictionary());
+    public IPipelineWithOutput<TIn, TOut> Build() 
+        => new PipelineWithOutput<TIn, TOut>(_firstPipe, _pipes.ToPipesDictionary());
     
     private void SetNextPipe(IActionPipe<TOut> nextPipe)
     {

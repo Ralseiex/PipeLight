@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.DependencyInjecti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.Mocks", "tests\PipeLight.Mocks\PipeLight.Mocks.csproj", "{A290467E-F83F-43E7-904F-C6794E71F161}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeLight.Persistence", "src\PipeLight.Persistence\PipeLight.Persistence.csproj", "{425A1C3F-A616-4BA3-89ED-E3C38DBB1004}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{A290467E-F83F-43E7-904F-C6794E71F161}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A290467E-F83F-43E7-904F-C6794E71F161}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A290467E-F83F-43E7-904F-C6794E71F161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{425A1C3F-A616-4BA3-89ED-E3C38DBB1004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{425A1C3F-A616-4BA3-89ED-E3C38DBB1004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{425A1C3F-A616-4BA3-89ED-E3C38DBB1004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{425A1C3F-A616-4BA3-89ED-E3C38DBB1004}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{D2B03F79-29B3-4FEB-9A31-E6FECB660EBB} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 		{EF025984-BA7E-4E63-BC58-01E3CB8C8564} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 		{A290467E-F83F-43E7-904F-C6794E71F161} = {A5467C08-7D43-494C-B439-A5E6D5C709F9}
+		{425A1C3F-A616-4BA3-89ED-E3C38DBB1004} = {2FA8711D-F0F7-4328-B69F-E1369A353948}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5AEF2C3-0EC9-4809-960B-546B622CB6AC}

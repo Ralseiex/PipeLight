@@ -15,5 +15,5 @@ public interface IPipelineBuilder<T>
     ISealedPipelineBuilder<T> Seal(IPipelineSealedStep<T> lastStep);
     ISealedPipelineBuilder<T> Seal(Type sealedStepType);
     ISealedPipelineBuilder<T> Seal<TStep>();
-    IPipeline<T, T> Build();
+    IPipelineWithOutput<T, T> Build();
 }
