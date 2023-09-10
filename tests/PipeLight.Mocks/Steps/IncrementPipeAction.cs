@@ -2,7 +2,7 @@
 
 namespace PipeLight.Mocks.Steps;
 
-public class IncrementPipeStep : IPipelineStep<int>
+public class IncrementPipeAction : IPipelineAction<int>
 {
     public async Task<int> Execute(int payload)
     {

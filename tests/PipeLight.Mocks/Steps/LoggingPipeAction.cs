@@ -3,14 +3,14 @@ using PipeLight.Abstractions.Steps;
 
 namespace PipeLight.Mocks.Steps;
 
-public class LoggingPipeStep<T> : IPipelineStep<T>
+public class LoggingPipeAction<T> : IPipelineAction<T>
 {
     private readonly string? _message;
 
-    public LoggingPipeStep(int message) : this(message.ToString())
+    public LoggingPipeAction(int message) : this(message.ToString())
     {
     }
-    public LoggingPipeStep(string? message = null) => _message = message;
+    public LoggingPipeAction(string? message = null) => _message = message;
 
     public Task<T> Execute(T payload)
     {

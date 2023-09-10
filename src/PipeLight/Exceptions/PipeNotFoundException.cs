@@ -1,6 +1,6 @@
 namespace PipeLight.Exceptions;
 
-public class PipeNotFoundException : Exception
+internal sealed class PipeNotFoundException : Exception
 {
     public PipeNotFoundException()
     {

@@ -4,7 +4,7 @@ public interface IPipelineStep
 {
 }
 
-public interface IPipelineStep<T> : IPipelineStep
+public interface IPipelineAction<T> : IPipelineStep
 {
     Task<T> Execute(T payload);
 }

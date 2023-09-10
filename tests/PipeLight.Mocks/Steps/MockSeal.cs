@@ -2,7 +2,7 @@
 
 namespace PipeLight.Mocks.Steps;
 
-public class MockSeal : IPipelineSealedStep<MockPayloadInt>
+public class MockSeal : IPipelineSeal<MockPayloadInt>
 {
     public Task Execute(MockPayloadInt payload)
     {
@@ -10,7 +10,7 @@ public class MockSeal : IPipelineSealedStep<MockPayloadInt>
     }
 }
 
-public class MockWithResultSeal : IPipelineSealedStep<MockPipelineResult>
+public class MockWithResultSeal : IPipelineSeal<MockPipelineResult>
 {
     public Task Execute(MockPipelineResult payload)
     {

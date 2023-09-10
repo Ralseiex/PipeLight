@@ -9,7 +9,7 @@ public class AddSteps
     public void AddStep_SingleStep_PipelineLengthEqualsStepsCount()
     {
         var builder = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep());
+            .AddAction(StepsFactory.MockStep());
         Assert.Equal(1, builder.PipelineLength);
     }
     
@@ -17,9 +17,9 @@ public class AddSteps
     public void AddStep_ThreeStep_PipelineLengthEqualsStepsCount()
     {
         var builder = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep());
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep());
         Assert.Equal(3, builder.PipelineLength);
     }
     
@@ -53,8 +53,8 @@ public class AddSteps
     public void AddStepSeal_ThreeStep_PipelineLengthEqualsStepsCount()
     {
         var builder = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .Seal(StepsFactory.MockSeal());
         Assert.Equal(3, builder.PipelineLength);
     }
@@ -63,8 +63,8 @@ public class AddSteps
     public void AddStepAddTransform_ThreeStep_PipelineLengthEqualsStepsCount()
     {
         var builder = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .AddTransform(StepsFactory.MockWithResult());
         Assert.Equal(3, builder.PipelineLength);
     }
@@ -73,8 +73,8 @@ public class AddSteps
     public void AddStepAddTransformSeal_ThreeStep_PipelineLengthEqualsStepsCount()
     {
         var builder = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .AddTransform(StepsFactory.MockWithResult())
             .Seal(StepsFactory.MockWithResultSeal());
         Assert.Equal(4, builder.PipelineLength);

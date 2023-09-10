@@ -5,7 +5,7 @@ using PipeLight.Exceptions;
 
 namespace PipeLight.Pipes;
 
-public class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
+internal sealed class TransformPipe<TIn, TOut> : ITransformPipe<TIn, TOut>
 {
     private readonly IPipelineTransform<TIn, TOut> _transform;
 

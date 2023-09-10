@@ -1,6 +1,6 @@
 namespace PipeLight.Exceptions;
 
-public class StepResolveException : Exception
+public sealed class StepResolveException : Exception
 {
     public StepResolveException()
     {

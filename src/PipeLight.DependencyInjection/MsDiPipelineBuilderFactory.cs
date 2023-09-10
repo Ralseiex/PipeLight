@@ -1,18 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
-using PipeLight.Builders;
 using PipeLight.Factories;
 
 namespace PipeLight.DependencyInjection;
 
-public class MsDiPipelineBuilderFactory : IPipelineBuilderFactory
+public class MsDiPipelineBuilderFactory : PipelineBuilderFactory
 {
-    private readonly IServiceScope _serviceScope;
-
-    public MsDiPipelineBuilderFactory(IServiceScope serviceScope)
+    public MsDiPipelineBuilderFactory(IServiceScope serviceScope) 
+        : base(new MsDiStepResolver(serviceScope.ServiceProvider))
     {
-        _serviceScope = serviceScope;
     }
-
-    public PipelineBuilder CreateBuilder()
-        => new(new MsDiStepResolver(_serviceScope.ServiceProvider));
 }

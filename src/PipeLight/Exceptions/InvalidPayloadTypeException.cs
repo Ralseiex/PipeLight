@@ -1,6 +1,6 @@
 namespace PipeLight.Exceptions;
 
-public class InvalidPayloadTypeException : Exception
+internal sealed class InvalidPayloadTypeException : Exception
 {
     public InvalidPayloadTypeException()
     {

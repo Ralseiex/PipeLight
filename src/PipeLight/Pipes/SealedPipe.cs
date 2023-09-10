@@ -5,11 +5,11 @@ using PipeLight.Exceptions;
 
 namespace PipeLight.Pipes;
 
-internal class SealedPipe<T> : ISealedPipe<T>
+internal sealed class SealedPipe<T> : ISealedPipe<T>
 {
-    private readonly IPipelineSealedStep<T> _step;
+    private readonly IPipelineSeal<T> _step;
 
-    public SealedPipe(IPipelineSealedStep<T> step)
+    public SealedPipe(IPipelineSeal<T> step)
     {
         Id = Guid.NewGuid();
         _step = step;

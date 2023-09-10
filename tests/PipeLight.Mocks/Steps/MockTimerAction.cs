@@ -2,11 +2,11 @@ using PipeLight.Abstractions.Steps;
 
 namespace PipeLight.Mocks.Steps;
 
-public class MockTimerStep : IPipelineStep<MockPayloadInt>
+public class MockTimerAction : IPipelineAction<MockPayloadInt>
 {
     private readonly TimeSpan _delay;
 
-    public MockTimerStep(TimeSpan delay)
+    public MockTimerAction(TimeSpan delay)
     {
         _delay = delay;
     }

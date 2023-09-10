@@ -2,7 +2,7 @@
 
 namespace PipeLight.Context;
 
-public class PipelineContext : IPipelineContext
+public sealed class PipelineContext : IPipelineContext
 {
     public PipelineContext(
         Guid correlationToken,

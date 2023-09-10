@@ -1,7 +1,6 @@
 ﻿using PipeLight.Abstractions.Builders;
-using PipeLight.Builders;
+using PipeLight.Factories;
 using PipeLight.Mocks;
-using PipeLight.Steps;
 
 namespace PipeLight.Tests.Helpers;
 
@@ -13,5 +12,5 @@ internal static class TestHelper
             Value = value,
             RefValue = refValue ?? new(),
         };
-    public static IPipelineBuilder ActivatorBuilder => new PipelineBuilder(new ActivatorStepResolver());
+    public static IPipelineBuilder ActivatorBuilder => new ActivatorPipelineBuilderFactory().CreateBuilder();
 }

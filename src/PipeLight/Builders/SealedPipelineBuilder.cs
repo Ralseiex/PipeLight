@@ -2,13 +2,12 @@
 using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
-using PipeLight.Extensions;
 using PipeLight.Pipelines;
 using PipeLight.Pipes;
 
 namespace PipeLight.Builders;
 
-public class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
+public sealed class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
 {
     private readonly IStepResolver _stepResolver;
     private readonly IPipeEnter<T> _firstPipe;
@@ -21,7 +20,7 @@ public class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
         _pipes = pipes;
     }
 
-    public SealedPipelineBuilder(IStepResolver stepResolver, IPipelineSealedStep<T> singleStep)
+    public SealedPipelineBuilder(IStepResolver stepResolver, IPipelineSeal<T> singleStep)
     {
         _stepResolver = stepResolver;
         var sealedPipe = new SealedPipe<T>(singleStep);
@@ -35,7 +34,7 @@ public class SealedPipelineBuilder<T> : ISealedPipelineBuilder<T>
     public SealedPipelineBuilder(IStepResolver stepResolver, Type sealedStepType)
     {
         _stepResolver = stepResolver;
-        var sealedStep = _stepResolver.ResolveSealedStep<T>(sealedStepType);
+        var sealedStep = _stepResolver.ResolveSeal<T>(sealedStepType);
         var sealedPipe = new SealedPipe<T>(sealedStep);
         _firstPipe = sealedPipe;
         _pipes = new List<IPipeEnter>

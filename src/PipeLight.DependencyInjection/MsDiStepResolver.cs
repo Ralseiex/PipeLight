@@ -12,12 +12,12 @@ public class MsDiStepResolver : IStepResolver
         _serviceProvider = serviceProvider;
     }
 
-    public IPipelineStep<T> ResolveStep<T>(Type stepType)
-        => (IPipelineStep<T>)(_serviceProvider.GetService(stepType) ?? throw new StepResolveException());
+    public IPipelineAction<T> ResolveAction<T>(Type stepType)
+        => (IPipelineAction<T>)(_serviceProvider.GetService(stepType) ?? throw new StepResolveException());
 
     public IPipelineTransform<TIn, TOut> ResolveTransform<TIn, TOut>(Type transformType)
         => (IPipelineTransform<TIn, TOut>)(_serviceProvider.GetService(transformType) ?? throw new StepResolveException());
     
-    public IPipelineSealedStep<T> ResolveSealedStep<T>(Type sealedStepType)
-        => (IPipelineSealedStep<T>)(_serviceProvider.GetService(sealedStepType) ?? throw new StepResolveException());
+    public IPipelineSeal<T> ResolveSeal<T>(Type sealedStepType)
+        => (IPipelineSeal<T>)(_serviceProvider.GetService(sealedStepType) ?? throw new StepResolveException());
 }

@@ -8,7 +8,7 @@ using PipeLight.Pipes;
 
 namespace PipeLight.Builders;
 
-public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
+public sealed class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
 {
     private readonly IStepResolver _stepResolver;
     private readonly IPipeEnter<TIn> _firstPipe;
@@ -61,18 +61,18 @@ public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
 
     public int PipelineLength => _pipes.Count;
 
-    public IPipelineBuilder<TIn, TOut> AddStep(IPipelineStep<TOut> step)
+    public IPipelineBuilder<TIn, TOut> AddAction(IPipelineAction<TOut> action)
     {
-        var pipe = new ActionPipe<TOut>(step);
+        var pipe = new ActionPipe<TOut>(action);
         SetNextPipe(pipe);
         _pipes.Add(pipe);
         return this;
     }
-    public IPipelineBuilder<TIn, TOut> AddStep(Type stepType) 
-        => AddStep(_stepResolver.ResolveStep<TOut>(stepType));
+    public IPipelineBuilder<TIn, TOut> AddAction(Type stepType) 
+        => AddAction(_stepResolver.ResolveAction<TOut>(stepType));
 
-    public IPipelineBuilder<TIn, TOut> AddStep<TStep>()
-        => AddStep(typeof(TStep));
+    public IPipelineBuilder<TIn, TOut> AddAction<TStep>()
+        => AddAction(typeof(TStep));
 
     public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut>(IPipelineTransform<TOut, TNewOut> transform)
     {
@@ -88,7 +88,7 @@ public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
     public IPipelineBuilder<TIn, TNewOut> AddTransform<TNewOut, TStep>()
         => AddTransform<TNewOut>(typeof(TStep));
 
-    public ISealedPipelineBuilder<TIn> Seal(IPipelineSealedStep<TOut> lastStep)
+    public ISealedPipelineBuilder<TIn> Seal(IPipelineSeal<TOut> lastStep)
     {
         var pipe = new SealedPipe<TOut>(lastStep);
         _lastPipe.NextPipe = pipe;
@@ -96,7 +96,7 @@ public class PipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
         return new SealedPipelineBuilder<TIn>(_stepResolver, _firstPipe, _pipes);
     }
     public ISealedPipelineBuilder<TIn> Seal(Type sealedStepType) 
-        => Seal(_stepResolver.ResolveSealedStep<TOut>(sealedStepType));
+        => Seal(_stepResolver.ResolveSeal<TOut>(sealedStepType));
 
     public ISealedPipelineBuilder<TIn> Seal<TStep>()
         => Seal(typeof(TStep));

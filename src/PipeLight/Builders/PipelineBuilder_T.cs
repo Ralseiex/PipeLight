@@ -2,23 +2,22 @@
 using PipeLight.Abstractions.Pipelines;
 using PipeLight.Abstractions.Pipes;
 using PipeLight.Abstractions.Steps;
-using PipeLight.Extensions;
 using PipeLight.Pipelines;
 using PipeLight.Pipes;
 
 namespace PipeLight.Builders;
 
-public class PipelineBuilder<T> : IPipelineBuilder<T>
+public sealed class PipelineBuilder<T> : IPipelineBuilder<T>
 {
     private readonly IStepResolver _stepResolver;
     private readonly IPipeEnter<T> _firstPipe;
     private IPipeExit<T> _lastPipe;
     private readonly List<IPipeEnter> _pipes;
 
-    public PipelineBuilder(IStepResolver stepResolver, IPipelineStep<T> firstStep)
+    public PipelineBuilder(IStepResolver stepResolver, IPipelineAction<T> firstAction)
     {
         _stepResolver = stepResolver;
-        var firstPipe = new ActionPipe<T>(firstStep);
+        var firstPipe = new ActionPipe<T>(firstAction);
         _firstPipe = firstPipe;
         _lastPipe = firstPipe;
         _pipes = new List<IPipeEnter>
@@ -29,19 +28,19 @@ public class PipelineBuilder<T> : IPipelineBuilder<T>
 
     public int PipelineLength => _pipes.Count;
 
-    public IPipelineBuilder<T> AddStep(IPipelineStep<T> step)
+    public IPipelineBuilder<T> AddAction(IPipelineAction<T> action)
     {
-        var pipe = new ActionPipe<T>(step);
+        var pipe = new ActionPipe<T>(action);
         SetNextPipe(pipe);
         _pipes.Add(pipe);
         return this;
     }
 
-    public IPipelineBuilder<T> AddStep(Type stepType)
-        => AddStep(_stepResolver.ResolveStep<T>(stepType));
+    public IPipelineBuilder<T> AddAction(Type stepType)
+        => AddAction(_stepResolver.ResolveAction<T>(stepType));
 
-    public IPipelineBuilder<T> AddStep<TStep>()
-        => AddStep(typeof(TStep));
+    public IPipelineBuilder<T> AddAction<TStep>()
+        => AddAction(typeof(TStep));
 
     public IPipelineBuilder<T, TNewOut> AddTransform<TNewOut>(IPipelineTransform<T, TNewOut> transform)
     {
@@ -57,7 +56,7 @@ public class PipelineBuilder<T> : IPipelineBuilder<T>
     public IPipelineBuilder<T, TNewOut> AddTransform<TNewOut, TStep>()
         => AddTransform<TNewOut>(typeof(TStep));
 
-    public ISealedPipelineBuilder<T> Seal(IPipelineSealedStep<T> lastStep)
+    public ISealedPipelineBuilder<T> Seal(IPipelineSeal<T> lastStep)
     {
         var pipe = new SealedPipe<T>(lastStep);
         _lastPipe.NextPipe = pipe;
@@ -66,13 +65,13 @@ public class PipelineBuilder<T> : IPipelineBuilder<T>
     }
 
     public ISealedPipelineBuilder<T> Seal(Type sealedStepType)
-        => Seal(_stepResolver.ResolveSealedStep<T>(sealedStepType));
+        => Seal(_stepResolver.ResolveSeal<T>(sealedStepType));
 
     public ISealedPipelineBuilder<T> Seal<TStep>()
         => Seal(typeof(TStep));
 
-    public IPipelineWithOutput<T, T> Build()
-        => new PipelineWithOutput<T, T>(_firstPipe, _pipes.ToPipesDictionary());
+    public IPipeline<T> Build()
+        => new Pipeline<T>(_firstPipe);
 
     private void SetNextPipe(IActionPipe<T> nextPipe)
     {

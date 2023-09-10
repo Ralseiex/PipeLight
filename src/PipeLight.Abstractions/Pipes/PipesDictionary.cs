@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 
 namespace PipeLight.Abstractions.Pipes;
 
-public class PipesDictionary : Dictionary<string, IPipeEnter>
+public sealed class PipesDictionary : Dictionary<string, IPipeEnter>
 {
 }
 

@@ -5,14 +5,14 @@ using PipeLight.Exceptions;
 
 namespace PipeLight.Pipes;
 
-internal class ActionPipe<T> : IActionPipe<T>
+internal sealed class ActionPipe<T> : IActionPipe<T>
 {
-    private readonly IPipelineStep<T> _step;
+    private readonly IPipelineAction<T> _action;
 
-    public ActionPipe(IPipelineStep<T> step)
+    public ActionPipe(IPipelineAction<T> action)
     {
         Id = Guid.NewGuid();
-        _step = step;
+        _action = action;
     }
 
     public Guid Id { get; }
@@ -30,7 +30,7 @@ internal class ActionPipe<T> : IActionPipe<T>
         try
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-            var result = await _step.Execute(payload).ConfigureAwait(false);
+            var result = await _action.Execute(payload).ConfigureAwait(false);
 
             if (NextPipe is not null)
                 await NextPipe.Push(result, context).ConfigureAwait(false);

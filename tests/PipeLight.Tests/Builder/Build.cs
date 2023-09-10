@@ -8,7 +8,7 @@ public class Build
     public void Build_WithSingleStep_PipelineIsNotNull()
     {
         var pipeline = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .Build();
         Assert.NotNull(pipeline);
     }
@@ -35,9 +35,9 @@ public class Build
     public void Build_WithThreeSteps_PipelineIsNotNull()
     {
         var pipeline = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .Build();
         Assert.NotNull(pipeline);
     }
@@ -57,8 +57,8 @@ public class Build
     public void Build_WithStepsAndSeal_PipelineIsNotNull()
     {
         var pipeline = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .Seal(StepsFactory.MockSeal())
             .Build();
         Assert.NotNull(pipeline);
@@ -68,8 +68,8 @@ public class Build
     public void Build_WithStepsAndTransform_PipelineIsNotNull()
     {
         var pipeline = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .AddTransform(StepsFactory.MockWithResult())
             .Build();
         Assert.NotNull(pipeline);
@@ -79,8 +79,8 @@ public class Build
     public void Build_WithStepsAndTransformAndSeal_PipelineIsNotNull()
     {
         var pipeline = TestHelper.ActivatorBuilder
-            .AddStep(StepsFactory.MockStep())
-            .AddStep(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
+            .AddAction(StepsFactory.MockStep())
             .AddTransform(StepsFactory.MockWithResult())
             .Seal(StepsFactory.MockWithResultSeal())
             .Build();

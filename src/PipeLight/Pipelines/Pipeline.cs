@@ -3,7 +3,7 @@ using PipeLight.Abstractions.Pipes;
 
 namespace PipeLight.Pipelines;
 
-public class Pipeline<TIn> : PipelineCore<TIn>, IPipeline<TIn>
+public sealed class Pipeline<TIn> : PipelineCore<TIn>, IPipeline<TIn>
 {
     public Pipeline(IPipeEnter<TIn> firstPipe) : base(firstPipe)
     {
